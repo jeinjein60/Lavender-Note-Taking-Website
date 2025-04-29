@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flask-Admin Styled Page - Dash</title>
+<link rel="stylesheet" href="./main.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <span class="brand">Admin Homepage</span>
+  </div>
+
+  <div class="sidebar">
+    <ul>
+      <li><a href="dashAdmin.html" class="active">Dashboard</a></li>
+      <li><a href="usersAdmin.html">Users</a></li>
+      <li><a href="pagesAdmin.html">Pages</a></li>
+      <!-- <li><a href="#">Settings</a></li> -limit to the amount of creations, blocking certain hashtags, limiting word count- -->
+
+    </ul>
+  </div>
+
+  <div class="main">
+    <h2>User</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>admin@example.com</td>
+          <td>
+            <a href="#" class="btn small">Edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

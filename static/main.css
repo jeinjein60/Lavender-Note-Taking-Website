@@ -54,7 +54,7 @@ body {
     cursor: pointer;
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
 }
 
 #addNoteDiv:hover {
@@ -168,7 +168,8 @@ textarea {
     display: flex;
 }
 
-#submitBtn, #closeBtn {
+#submitBtn,
+#closeBtn {
     width: 100px;
     background-color: #bb8bda;
     color: rgb(235, 223, 243);
@@ -194,7 +195,8 @@ textarea {
     width: 450px;
     height: 400px;
     background-color: rgb(235, 223, 243);
-    border: 1px solid rgb(225, 212, 233);;
+    border: 1px solid rgb(225, 212, 233);
+    ;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 8px;
@@ -205,7 +207,8 @@ textarea {
     justify-content: center;
 }
 
-#submitBtn, #closeBtn {
+#submitBtn,
+#closeBtn {
     width: 100px;
     background-color: #bb8bda;
     color: #84639a;
@@ -219,7 +222,7 @@ textarea {
 
 #closeBtn {
     background-color: #a280b8;
-} 
+}
 
 /* Misc */
 #format-options {
@@ -259,9 +262,9 @@ textarea {
     overflow-y: auto;
     box-sizing: border-box;
     margin: 10px 0;
-  }
-  
-  .note-content {
+}
+
+.note-content {
     font-size: 14px;
     text-align: left;
     width: 100%;
@@ -272,9 +275,9 @@ textarea {
     word-wrap: break-word;
     background: #d1b4e8;
     border-radius: 5px;
-  }
-  
-  #format-bar button {
+}
+
+#format-bar button {
     background: #bb8bda;
     color: #84639a;
     border: none;
@@ -282,8 +285,27 @@ textarea {
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  #format-bar button:hover {
+}
+
+#format-bar button:hover {
     background: #a280b8;
-  } 
+}
+
+#logoutDiv {
+    float: right;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+#logoutButton {
+    text-decoration: none;
+    background-color: #d9534f;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#logoutButton:hover {
+    background-color: #c9302c;
+}

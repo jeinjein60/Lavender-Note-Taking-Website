@@ -13,7 +13,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Models
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -25,15 +24,12 @@ class Note(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-    # user = db.relationship('User', backref='notes')
     user = db.relationship('User', backref=db.backref('notes', lazy=True))
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Decorator for admin-only routes
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -42,7 +38,6 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Admin-only routes
 @app.route('/admin/dashboard')
 @login_required
 @admin_required
@@ -99,7 +94,6 @@ def delete_user(user_id):
     flash('User deleted.', 'info')
     return redirect(url_for('admin_users'))
 
-# Public user routes
 @app.route('/')
 @login_required
 def serve_index():
@@ -146,7 +140,6 @@ def logout():
     flash('Logged out.', 'info')
     return redirect(url_for('login'))
 
-# API routes for notes
 @app.route('/api/notes', methods=['GET'])
 @login_required
 def get_notes():
@@ -180,7 +173,6 @@ def delete_note(note_id):
     db.session.commit()
     return jsonify({'message': 'deleted'})
 
-# Initialize DB and create default admin user
 with app.app_context():
     db.create_all()
     if not User.query.filter_by(username='admin').first():

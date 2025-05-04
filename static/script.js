@@ -1,4 +1,4 @@
-/* Create Note Popup Code*/
+/* Create Note Popup Code */
 function popup() {
   const popupContainer = document.createElement("div");
   popupContainer.innerHTML = `
@@ -23,11 +23,11 @@ function popup() {
 
 function formatText(command) {
   if (command === "insertCheckbox") {
-      document.execCommand("insertHTML", false, '<input type="checkbox"> ');
+    document.execCommand("insertHTML", false, '<input type="checkbox"> ');
   } else {
-      document.execCommand(command, false, null);
+    document.execCommand(command, false, null);
   }
-} 
+}
 
 function formatText2(command) {
   if (command === "insertBulletPoint") {
@@ -37,14 +37,14 @@ function formatText2(command) {
   }
 }
 
-
 function closePopup() {
   const popupContainer = document.getElementById("popupContainer");
   if (popupContainer) {
-      popupContainer.remove();
+    popupContainer.remove();
   }
 }
 
+/* Create Note API */
 function createNote() {
   const popupContainer = document.getElementById("popupContainer");
   const noteEditor = document.getElementById("note-editor");
@@ -53,118 +53,131 @@ function createNote() {
   const titleContent = noteTitle.value.trim();
 
   if (noteContent !== "" && titleContent !== "") {
-      const note = {
-          id: new Date().getTime(),
-          title: titleContent,
-          text: noteContent,
-      };
-
-      const existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
-      existingNotes.push(note);
-
-      localStorage.setItem("notes", JSON.stringify(existingNotes));
-
-      popupContainer.remove();
-      displayNotes();
+    fetch('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: titleContent, content: noteContent })
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Note created:', data);
+        closePopup();
+        displayNotes();
+      })
+      .catch(error => console.error('Error creating note:', error));
   }
 }
-  /* Display Notes Code*/
-  
-  function displayNotes() {
-    const notesList = document.getElementById("notes-list");
-    notesList.innerHTML = "";
-  
-    const notes = JSON.parse(localStorage.getItem("notes")) || [];
-  
-    notes.forEach((note) => {
-      const listItem = document.createElement("li");
-      listItem.className = "note-item";
-      listItem.innerHTML = `
-        <div class="note-header">${note.title}</div>
-        <div class="note-content" contenteditable="false">${note.text}</div>
-        <div id="noteBtns-container">
-          <button id="editBtn" onclick="editNote(${note.id})">
-            <i class="fa-solid fa-pen"></i>
-          </button>
-          <button id="deleteBtn" onclick="deleteNote(${note.id})">
-            <i class="fa-solid fa-trash"></i>
-          </button>
+
+/* Display Notes */
+function displayNotes() {
+  const notesList = document.getElementById("notes-list");
+  if (!notesList) {
+    console.error('No element with id="notes-list" found.');
+    return;
+  }
+
+  notesList.innerHTML = "";
+
+  fetch('/api/notes')
+    .then(response => response.json())
+    .then(notes => {
+      notes.forEach(note => {
+        const listItem = document.createElement("li");
+        listItem.className = "note-item";
+        listItem.innerHTML = `
+          <div class="note-header">${note.title}</div>
+          <div class="note-content" contenteditable="false">${note.content}</div>
+          <div id="noteBtns-container">
+            <button id="editBtn" onclick="editNote(${note.id})"><i class="fa-solid fa-pen"></i></button>
+            <button id="deleteBtn" onclick="deleteNote(${note.id})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        notesList.appendChild(listItem);
+      });
+    })
+    .catch(error => console.error('Error fetching notes:', error));
+}
+
+/* Edit Note Popup */
+function editNote(noteId) {
+  fetch(`/api/notes`)
+    .then(response => response.json())
+    .then(notes => {
+      const noteToEdit = notes.find(note => note.id === noteId);
+      if (!noteToEdit) {
+        console.error('Note not found.');
+        return;
+      }
+
+      const editingPopup = document.createElement("div");
+      editingPopup.innerHTML = `
+        <div id="editing-container" data-note-id="${noteId}">
+          <h1>Edit Note</h1>
+          <input type="text" id="note-title" value="${noteToEdit.title}" />
+          <div id="format-bar">
+            <button onclick="formatText('bold')"><i class="fa-solid fa-bold"></i></button>
+            <button onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
+            <button onclick="formatText2('insertBulletPoint')"><i class="fa-solid fa-circle"></i></button>
+            <button onclick="formatText('insertCheckbox')"><i class="fa-solid fa-square-check"></i></button>
+          </div>
+          <div id="note-editor" contenteditable="true">${noteToEdit.content}</div>
+          <div id="btn-container">
+            <button id="submitBtn" onclick="updateNote()">Done</button>
+            <button id="closeBtn" onclick="closeEditPopup()">Cancel</button>
+          </div>
         </div>
       `;
-      notesList.appendChild(listItem);
-    });
+      document.body.appendChild(editingPopup);
+    })
+    .catch(error => console.error('Error loading note for editing:', error));
+}
+
+/* Update Note API */
+function updateNote() {
+  const noteEditor = document.getElementById("note-editor");
+  const noteTitle = document.getElementById("note-title");
+  const noteContent = noteEditor.innerHTML.trim();
+  const titleContent = noteTitle.value.trim();
+  const editingPopup = document.getElementById("editing-container");
+
+  if (noteContent !== "" && titleContent !== "") {
+    const noteId = editingPopup.getAttribute("data-note-id");
+
+    fetch(`/api/notes/${noteId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: titleContent, content: noteContent })
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Note updated:', data);
+        editingPopup.remove();
+        displayNotes();
+      })
+      .catch(error => console.error('Error updating note:', error));
   }
-  
-  /* Edit Note Popup Code*/
-  
-  function editNote(noteId) {
-    const notes = JSON.parse(localStorage.getItem("notes")) || [];
-    const noteToEdit = notes.find((note) => note.id == noteId);
-    const noteText = noteToEdit ? noteToEdit.text : "";
-    const noteTitle = noteToEdit ? noteToEdit.title : "";
-  
-    const editingPopup = document.createElement("div");
-    editingPopup.innerHTML = `
-      <div id="editing-container" data-note-id="${noteId}">
-        <h1>Edit Note</h1>
-        <input type="text" id="note-title" value="${noteTitle}" />
-        <div id="format-bar">
-          <button onclick="formatText('bold')"><i class="fa-solid fa-bold"></i></button>
-          <button onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
-          <button onclick="formatText2('insertBulletPoint')"><i class="fa-solid fa-circle"></i></button>
-          <button onclick="formatText('insertCheckbox')"><i class="fa-solid fa-square-check"></i></button>
-        </div>
-        <div id="note-editor" contenteditable="true">${noteText}</div>
-        <div id="btn-container">
-          <button id="submitBtn" onclick="updateNote()">Done</button>
-          <button id="closeBtn" onclick="closeEditPopup()">Cancel</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(editingPopup);
-  }
-  
-  function closeEditPopup() {
-    const editingPopup = document.getElementById("editing-container");
-  
-    if (editingPopup) {
-      editingPopup.remove();
-    }
-  }
-  
-  function updateNote() {
-    const noteEditor = document.getElementById("note-editor");
-    const noteTitle = document.getElementById("note-title");
-    const noteContent = noteEditor.innerHTML.trim();
-    const titleContent = noteTitle.value.trim();
-    const editingPopup = document.getElementById("editing-container");
-  
-    if (noteContent !== "" && titleContent !== "") {
-      const noteId = editingPopup.getAttribute("data-note-id");
-      let notes = JSON.parse(localStorage.getItem("notes")) || [];
-  
-      const updatedNotes = notes.map((note) => {
-        if (note.id == noteId) {
-          return { id: note.id, title: titleContent, text: noteContent };
-        }
-        return note;
-      });
-  
-      localStorage.setItem("notes", JSON.stringify(updatedNotes));
-  
-      editingPopup.remove();
+}
+
+/* Delete Note API */
+function deleteNote(noteId) {
+  fetch(`/api/notes/${noteId}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Note deleted:', data);
       displayNotes();
-    }
+    })
+    .catch(error => console.error('Error deleting note:', error));
+}
+
+/* Close Edit Popup */
+function closeEditPopup() {
+  const editingPopup = document.getElementById("editing-container");
+  if (editingPopup) {
+    editingPopup.remove();
   }
-  
-  /* Delete Note Logic*/
-  
-  function deleteNote(noteId) {
-    let notes = JSON.parse(localStorage.getItem("notes")) || [];
-    notes = notes.filter((note) => note.id !== noteId);
-  
-    localStorage.setItem("notes", JSON.stringify(notes));
-    displayNotes();
-  }
-  
-  displayNotes();
+}
+
+/* Initialize Notes Display */
+displayNotes();

@@ -1,0 +1,13 @@
+if you want to test admin
+ username: admin
+ password: adminpass
+
+so far the users in the database are:
+ username: dj
+ password: dj123
+ (they made the YAY note)
+
+ username: test
+ password: test123
+
+I'm not completely done with admin page yet, cus i gotta fix the problem of the index.html opening instead of the login when I flask run.

@@ -2,43 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flask-Admin Styled Page - Dash</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <title>Flask-Admin Styled Page - Users</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
 
   <div class="navbar">
-    <span class="brand">Admin Homepage</span>
+    <span class="brand">Admin Uder Managment</span>
   </div>
 
   <div class="sidebar">
     <ul>
       <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
-      <li><a href="{{ url_for('admin_users') }}">Users</a></li>
-      <li><a href="{{ url_for('admin_pages') }}" class="active">Pages</a></li>
+      <li><a href="{{ url_for('admin_users') }}" class="active">Users</a></li>
+      <li><a href="{{ url_for('admin_pages') }}">Pages</a></li>
+      <!-- <li><a href="#">Settings</a></li> -limit to the amount of creations, blocking certain hashtags, limiting word count- -->
+
     </ul>
   </div>
 
   <div class="main">
-    <h1>Published Notes</h1>
-
-    <div class="note-grid">
-      {% for note in notes %}
-        <div class="note-card">
-          <div>
-            <div class="note-title">{{ note.title }}</div>
-            <div class="note-description">{{ note.content }}</div>
-          </div>
-          <div class="note-footer">
-            <div class="note-meta">Created by @{{ note.user.username }}</div>
-            <a href="{{ url_for('delete_note_admin', note_id=note.id) }}" class="delete-btn">Delete</a>
-          </div>
-        </div>
-        {% else %}
-        <p>No notes published yet.</p>
-      {% endfor %}
-    </div>
-
+    <h2>Users</h2>
+    <a href="{{ url_for('register') }}" class="btn">+ Create User</a>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <!-- <th>Password</th> -->
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+          {% if u.id != 1 %}
+            <tr>
+              <td>{{ u.id }}</td>
+              <td>{{ u.username }}</td>
+              <td>
+                <a href="{{ url_for('edit_user', user_id=u.id) }}" class="btn small">Edit</a>
+                <a href="{{ url_for('delete_user', user_id=u.id) }}" class="btn small danger">Delete</a>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %} 
+      </tbody>
+    </table>
   </div>
 
 </body>

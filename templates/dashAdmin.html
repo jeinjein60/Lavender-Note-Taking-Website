@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flask-Admin Styled Page - Dash</title>
-<link rel="stylesheet" href="./main.css">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
 
@@ -13,33 +13,27 @@
 
   <div class="sidebar">
     <ul>
-      <li><a href="dashAdmin.html" class="active">Dashboard</a></li>
-      <li><a href="usersAdmin.html">Users</a></li>
-      <li><a href="pagesAdmin.html">Pages</a></li>
-      <!-- <li><a href="#">Settings</a></li> -limit to the amount of creations, blocking certain hashtags, limiting word count- -->
-
+      <li><a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a></li>
+      <li><a href="{{ url_for('admin_users') }}">Users</a></li>
+      <li><a href="{{ url_for('admin_pages') }}">Pages</a></li>
     </ul>
   </div>
 
   <div class="main">
-    <h2>Admin User</h2>
+    <h2>Welcome Purple Note Admin!</h2>
     <table>
       <thead>
         <tr>
           <th>ID</th>
           <th>Username</th>
           <th>Password</th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>1</td>
-          <td>--username--</td>
-          <td>--password--</td>
-          <td>
-            <a href="#" class="btn small">Edit</a>
-          </td>
+          <td>admin</td>
+          <td>adminpass</td>
         </tr>
       </tbody>
     </table>
@@ -47,3 +41,4 @@
 
 </body>
 </html>
+

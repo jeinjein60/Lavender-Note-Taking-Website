@@ -65,8 +65,37 @@ function createNote() {
         displayNotes();
       })
       .catch(error => console.error('Error creating note:', error));
+
+      const message = document.createElement("div");
+      message.textContent = "Note Saved!";
+      message.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color:rgb(141, 69, 143);
+          color: white;
+          padding: 10px 20px;
+          border-radius: 5px;
+          z-index: 1000;
+          opacity: 0;
+          transition: opacity 0.5s ease-in-out;
+          `;
+          document.body.appendChild(message);
+
+          setTimeout(() => {
+            message.style.opacity = 1;
+          }, 50);
+
+          setTimeout(() => {
+            message.style.opacity = 0;
+            setTimeout(() => {
+              message.remove();
+            }, 500);
+            }, 2000);
   }
 }
+
 
 /* Display Notes */
 function displayNotes() {

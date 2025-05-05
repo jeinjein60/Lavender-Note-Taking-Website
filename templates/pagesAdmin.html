@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Flask-Admin Styled Page - Dash</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+
+  <div class="navbar">
+    <span class="brand">Admin Homepage</span>
+  </div>
+
+  <div class="sidebar">
+    <ul>
+      <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('admin_users') }}">Users</a></li>
+      <li><a href="{{ url_for('admin_pages') }}" class="active">Pages</a></li>
+      <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <h1>Published Notes</h1>
+
+    <div class="note-grid">
+      {% for note in notes %}
+      <div class="note-card">
+        <div>
+          <div class="note-title">{{ note.title }}</div>
+          <div class="note-description">{{ note.content }}</div>
+        </div>
+        <div class="note-footer">
+          <div class="note-meta">Created by @{{ note.user.username }}</div>
+          <a href="{{ url_for('delete_note_admin', note_id=note.id) }}" class="delete-btn">Delete</a>
+        </div>
+      </div>
+      {% else %}
+      <p>No notes published yet.</p>
+      {% endfor %}
+    </div>
+
+  </div>
+
+</body>
+
+</html>

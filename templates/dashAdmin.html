@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+
+  <div class="navbar">
+    <span class="brand">Admin Homepage</span>
+  </div>
+
+  <div class="sidebar">
+    <ul>
+      <li><a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a></li>
+      <li><a href="{{ url_for('admin_users') }}">Users</a></li>
+      <li><a href="{{ url_for('admin_pages') }}">Pages</a></li>
+      <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <h2>Welcome Purple Note Admin!</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Password</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>admin</td>
+          <td>adminpass</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+
+</html>

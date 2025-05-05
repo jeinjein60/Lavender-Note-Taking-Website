@@ -23,8 +23,12 @@ class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref=db.backref('notes', lazy=True))
+
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -94,11 +98,15 @@ def delete_user(user_id):
     flash('User deleted.', 'info')
     return redirect(url_for('admin_users'))
 
-@app.route('/')
+# @app.route('/')
+# @login_required
+# def serve_index():
+#     notes = Note.query.filter_by(user_id=current_user.id).all()
+#     return render_template('index.html', notes=notes)
+@app.route('/serve_index')
 @login_required
 def serve_index():
-    notes = Note.query.filter_by(user_id=current_user.id).all()
-    return render_template('index.html', notes=notes)
+    return render_template('index.html')  # Regular user notes page
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -123,6 +131,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
+
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Logged in.', 'success')

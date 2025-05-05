@@ -98,15 +98,10 @@ def delete_user(user_id):
     flash('User deleted.', 'info')
     return redirect(url_for('admin_users'))
 
-# @app.route('/')
-# @login_required
-# def serve_index():
-#     notes = Note.query.filter_by(user_id=current_user.id).all()
-#     return render_template('index.html', notes=notes)
 @app.route('/serve_index')
 @login_required
 def serve_index():
-    return render_template('index.html')  # Regular user notes page
+    return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])

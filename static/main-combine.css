@@ -309,3 +309,28 @@ textarea {
 #logoutButton:hover {
     background-color: #c9302c;
 }
+
+#top-buttons {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+  }
+
+  .top-button {
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: #a06cd5;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+
+  .top-button:hover {
+    background-color: #8a4fb5;
+  }

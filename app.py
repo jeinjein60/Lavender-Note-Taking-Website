@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -29,6 +29,17 @@ class Note(db.Model):
 @app.route('/')
 def home():
     return redirect(url_for('login'))
+
+@app.route('/homepage')
+@login_required
+def homepage():
+    return render_template('homepage.html')
+
+@app.route('/tasks')
+@login_required
+def tasks():
+    return render_template('buttons.html')
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -70,7 +81,7 @@ def delete_note_admin(note_id):
     note = Note.query.get_or_404(note_id)
     db.session.delete(note)
     db.session.commit()
-    flash('Note deleted.', 'info')
+    # flash('Note deleted.', 'info')
     return redirect(url_for('admin_pages'))
 
 
@@ -84,7 +95,7 @@ def edit_user(user_id):
         if request.form['password']:
             user.password = generate_password_hash(request.form['password'], method='pbkdf2:sha256')
         db.session.commit()
-        flash('User updated.', 'success')
+        # flash('User updated.', 'success')
         return redirect(url_for('admin_users'))
     return render_template('editUser.html', user=user)
 
@@ -95,7 +106,7 @@ def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
-    flash('User deleted.', 'info')
+    # flash('User deleted.', 'info')
     return redirect(url_for('admin_users'))
 
 @app.route('/serve_index')
@@ -110,13 +121,13 @@ def register():
         username = request.form['username']
         password = request.form['password']
         if User.query.filter_by(username=username).first():
-            flash('Username already exists.', 'warning')
+            # flash('Username already exists.', 'warning')
             return redirect(url_for('register'))
         hashed = generate_password_hash(password, method='pbkdf2:sha256')
         new_user = User(username=username, password=hashed)
         db.session.add(new_user)
         db.session.commit()
-        flash('Account created!', 'success')
+        # flash('Account created!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html')
 
@@ -129,19 +140,19 @@ def login():
 
         if user and check_password_hash(user.password, password):
             login_user(user)
-            flash('Logged in.', 'success')
+            # flash('Logged in.', 'success')
             if user.is_admin:
                 return redirect(url_for('admin_dashboard'))
             else:
-                return redirect(url_for('serve_index'))
-        flash('Invalid credentials.', 'danger')
+                return redirect(url_for('homepage'))
+        # flash('Invalid credentials.', 'danger')
     return render_template('loginpage.html')
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash('Logged out.', 'info')
+    # flash('Logged out.', 'info')
     return redirect(url_for('login'))
 
 @app.route('/api/notes', methods=['GET'])

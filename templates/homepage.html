@@ -3,23 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Purple Themed Template Selector</title>
+  <title>Theme Selector</title>
   <style>
+    :root {
+      --bg-color: #e1d8eb;
+      --text-color: #2e003e;
+      --sidebar-bg: #a675c9;
+      --project-bg: #c59be9;
+      --button-bg: #a06cd5;
+      --button-hover: #8a4fb5;
+      --template-bg: #b388eb;
+      --template-hover: #a06cd5;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       display: flex;
       height: 100vh;
-      background-color: #f5f0fa;
-      color: #2e003e;
+      background-color: var(--bg-color);
+      color: var(--text-color);
     }
 
     .sidebar {
       width: 250px;
-      background-color: #a675c9;
+      background-color: var(--sidebar-bg);
       padding: 20px;
-      color: white;
       box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      color: var(--text-color);
     }
 
     .sidebar h2 {
@@ -33,11 +44,10 @@
     }
 
     .project {
-      background-color: #c59be9;
+      background-color: var(--project-bg);
       margin-bottom: 10px;
       padding: 10px;
       border-radius: 8px;
-      transition: transform 0.2s;
       cursor: pointer;
     }
 
@@ -60,17 +70,16 @@
     .top-right-buttons button {
       margin-left: 10px;
       padding: 8px 16px;
-      background-color: #a06cd5;
+      background-color: var(--button-bg);
       border: none;
       border-radius: 6px;
       color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
 
     .top-right-buttons button:hover {
-      background-color: #8a4fb5;
+      background-color: var(--button-hover);
     }
 
     .main h1 {
@@ -85,19 +94,32 @@
     }
 
     .template-box {
-      background-color: #b388eb;
+      background-color: var(--template-bg);
       padding: 40px 60px;
       border-radius: 12px;
       text-align: center;
       font-size: 20px;
       cursor: pointer;
-      transition: transform 0.3s, background-color 0.3s;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     .template-box:hover {
-      transform: scale(1.1);
-      background-color: #a06cd5;
+      background-color: var(--template-hover);
+    }
+
+    .button-link {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: var(--button-bg);
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      margin-left: 10px;
+    }
+
+    .button-link:hover {
+      background-color: var(--button-hover);
     }
   </style>
 </head>
@@ -105,24 +127,63 @@
   <div class="sidebar">
     <h2>Welcome User!</h2>
     <div class="project-section">
-      <h3>Projects:</h3>
-      <div class="project">Project 1</div>
-      <div class="project">Project 2</div>
-      <div class="project">Project 3</div>
+      <h3>Customize:</h3>
+      <div class="project" onclick="setTheme('light')">Light Mode</div>
+      <div class="project" onclick="setTheme('dark')">Dark Mode</div>
+      <div class="project" onclick="setTheme('purple')">Purple Default Mode</div>
     </div>
   </div>
 
   <div class="main">
     <div class="top-right-buttons">
       <button>Share</button>
-      <button>Logout</button>
+      <a href="{{ url_for('logout') }}" class="button-link">Logout</a>
     </div>
 
     <h1>Choose your template:</h1>
     <div class="template-options">
-      <div class="template-box"><a href="{{ url_for('serve_index') }}">Notes</a></div>
-      <div class="template-box">Task</div>
+      <a href="{{ url_for('serve_index') }}" style="text-decoration: none; color: inherit;">
+        <div class="template-box">Notes</div>
+      </a>
+      <a href="{{ url_for('tasks') }}" style="text-decoration: none; color: inherit;">
+        <div class="template-box">Task</div>
+      </a>
     </div>
   </div>
+
+  <script>
+    function setTheme(mode) {
+      const root = document.documentElement;
+      if (mode === 'light') {
+        root.style.setProperty('--bg-color', '#dadada');
+        root.style.setProperty('--text-color', '#000000');
+        root.style.setProperty('--sidebar-bg', '#9c9b9b');
+        root.style.setProperty('--project-bg', '#eeeeee');
+        root.style.setProperty('--button-bg', '#888888');
+        root.style.setProperty('--button-hover', '#666666');
+        root.style.setProperty('--template-bg', '#dddddd');
+        root.style.setProperty('--template-hover', '#bbbbbb');
+      } else if (mode === 'dark') {
+        root.style.setProperty('--bg-color', '#1e1e1e');
+        root.style.setProperty('--text-color', '#f0f0f0');
+        root.style.setProperty('--sidebar-bg', '#333333');
+        root.style.setProperty('--project-bg', '#444444');
+        root.style.setProperty('--button-bg', '#555555');
+        root.style.setProperty('--button-hover', '#777777');
+        root.style.setProperty('--template-bg', '#666666');
+        root.style.setProperty('--template-hover', '#888888');
+      } else if (mode === 'purple') {
+        root.style.setProperty('--bg-color', '#f5f0fa');
+        root.style.setProperty('--text-color', '#2e003e');
+        root.style.setProperty('--sidebar-bg', '#a675c9');
+        root.style.setProperty('--project-bg', '#c59be9');
+        root.style.setProperty('--button-bg', '#a06cd5');
+        root.style.setProperty('--button-hover', '#8a4fb5');
+        root.style.setProperty('--template-bg', '#b388eb');
+        root.style.setProperty('--template-hover', '#a06cd5');
+      }
+    }
+
+  </script>
 </body>
 </html>

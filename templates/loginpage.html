@@ -57,6 +57,23 @@
         color: #555;
         text-align: left;
     }
+
+    .full-button {
+            display: inline-block;
+            width: 93%;
+            padding: 12px;
+            background-color: #4A90E2;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+    }
+
+    .full-button:hover {
+        background-color: #357ABD;
+    }
 </style>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -74,6 +91,6 @@
     <br><br>
     <button type="submit">Sign In</button>
     <br><br>
-    <button type="button"><a href="{{ url_for('register') }}">Register</a></button>
+    <a href="{{ url_for('register') }}" class="full-button">Register</a>
 
 </form>

@@ -75,7 +75,9 @@
         <br><br>
         <button type="submit">Create Account</button>
         <br><br>
-        <button type="button"><a href="{{ url_for('login') }}">Already Have An Account? Login!</a></button>
+        <button type="button">
+            <a href="{{ url_for('auth.login') }}">Already Have An Account? Login!</a>
+        </button>
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
         <div class="alert alert-{{ category }}">{{ message }}</div>

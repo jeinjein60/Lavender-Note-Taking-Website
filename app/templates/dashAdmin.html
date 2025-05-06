@@ -15,10 +15,10 @@
 
   <div class="sidebar">
     <ul>
-      <li><a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a></li>
-      <li><a href="{{ url_for('admin_users') }}">Users</a></li>
-      <li><a href="{{ url_for('admin_pages') }}">Pages</a></li>
-      <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      <li><a href="{{ url_for('admin.admin_dashboard') }}" class="active">Dashboard</a></li>
+      <li><a href="{{ url_for('admin.admin_users') }}">Users</a></li>
+      <li><a href="{{ url_for('admin.admin_pages') }}">Pages</a></li>
+      <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
     </ul>
   </div>
 

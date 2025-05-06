@@ -306,6 +306,18 @@ textarea {
     font-weight: bold;
 }
 
+.popup-form {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 20px;
+    border: 2px solid #ccc;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
 #logoutButton:hover {
     background-color: #c9302c;
 }

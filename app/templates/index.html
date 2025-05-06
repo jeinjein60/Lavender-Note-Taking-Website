@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lavender Notes App</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -16,14 +16,16 @@
         <i class="fa-solid fa-plus"></i>
       </div>
     </div>
+
     <div id="list-container">
       <ul id="notes-list"></ul>
     </div>
+
     <div id="logoutDiv">
-      <a href="{{ url_for('logout') }}" id="logoutButton">Logout</a>
+      <a href="{{ url_for('auth.logout') }}" id="logoutButton">Logout</a>
     </div>
   </div>
-  </div>
+
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 

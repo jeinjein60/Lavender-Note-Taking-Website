@@ -5,6 +5,7 @@ function popup() {
     <div id="popupContainer">
       <h1>New Note</h1>
       <input type="text" id="note-title" placeholder="Enter Title..." />
+      <input type="file" id="note-image" accept="image/*" />
       <div id="format-bar">
         <button onclick="formatText('bold')"><i class="fa-solid fa-bold"></i></button>
         <button onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
@@ -46,31 +47,41 @@ function closePopup() {
 
 /* Create Note API */
 function createNote() {
-  const popupContainer = document.getElementById("popupContainer");
   const noteEditor = document.getElementById("note-editor");
   const noteTitle = document.getElementById("note-title");
   const noteContent = noteEditor.innerHTML.trim();
   const titleContent = noteTitle.value.trim();
+  const imageInput = document.getElementById("note-image");
 
   if (noteContent !== "" && titleContent !== "") {
+    const formData = new FormData();
+    formData.append("title", titleContent);
+    formData.append("content", noteContent);
+    if (imageInput && imageInput.files.length > 0) {
+      formData.append("image", imageInput.files[0]);
+    }
+
     fetch('/api/notes', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: titleContent, content: noteContent })
+      body: formData
     })
       .then(response => response.json())
       .then(data => {
         console.log('Note created:', data);
         closePopup();
         displayNotes();
+        showSuccessMessage("Note Saved!");
       })
       .catch(error => console.error('Error creating note:', error));
+  }
+}
 
-    const message = document.createElement("div");
-    message.textContent = "Note Saved!";
-    message.style.cssText = `
-          position: fixed;
-          top: 20px;
+function showSuccessMessage(text) {
+  const message = document.createElement("div");
+  message.textContent = text;
+  message.style.cssText = `
+    position: fixed;
+    top: 20px;
           left: 50%;
           transform: translateX(-50%);
           background-color:rgb(141, 69, 143);
@@ -81,21 +92,20 @@ function createNote() {
           opacity: 0;
           transition: opacity 0.5s ease-in-out;
           `;
-    document.body.appendChild(message);
+  document.body.appendChild(message);
 
-    setTimeout(() => {
-      message.style.opacity = 1;
-    }, 50);
-
-    setTimeout(() => {
-      message.style.opacity = 0;
-      setTimeout(() => {
-        message.remove();
-      }, 500);
-    }, 2000);
-  }
 }
 
+setTimeout(() => {
+  message.style.opacity = 1;
+}, 50);
+
+setTimeout(() => {
+  message.style.opacity = 0;
+  setTimeout(() => {
+    message.remove();
+  }, 500);
+}, 2000);
 
 /* Display Notes */
 function displayNotes() {
@@ -110,10 +120,20 @@ function displayNotes() {
   fetch('/api/notes')
     .then(response => response.json())
     .then(notes => {
-      notes.forEach(note => {
-        const listItem = document.createElement("li");
-        listItem.className = "note-item";
-        listItem.innerHTML = `
+      notes.forEach(note => renderNote(note));
+    })
+    .catch(error => console.error('Error fetching notes:', error));
+}
+
+notesList.innerHTML = "";
+
+fetch('/api/notes')
+  .then(response => response.json())
+  .then(notes => {
+    notes.forEach(note => {
+      const listItem = document.createElement("li");
+      listItem.className = "note-item";
+      listItem.innerHTML = `
           <div class="note-header">${note.title}</div>
           <div class="note-content" contenteditable="false">${note.content}</div>
           <div id="noteBtns-container">
@@ -121,11 +141,11 @@ function displayNotes() {
             <button id="deleteBtn" onclick="deleteNote(${note.id})"><i class="fa-solid fa-trash"></i></button>
           </div>
         `;
-        notesList.appendChild(listItem);
-      });
-    })
-    .catch(error => console.error('Error fetching notes:', error));
-}
+      notesList.appendChild(listItem);
+    });
+  })
+  .catch(error => console.error('Error fetching notes:', error));
+
 
 /* Edit Note Popup */
 function editNote(noteId) {
@@ -206,7 +226,32 @@ function closeEditPopup() {
   if (editingPopup) {
     editingPopup.remove();
   }
+
 }
+
+function popup() {
+  document.getElementById('notePopup').style.display = 'block';
+}
+
+function closePopup() {
+  document.getElementById('notePopup').style.display = 'none';
+}
+
+function renderNote(note) {
+  const noteElement = document.createElement('li');
+  noteElement.className = 'note';
+
+  noteElement.innerHTML = `
+    <h3>${note.title}</h3>
+    <p>${note.content}</p>
+    ${note.image_filename ? `<img src="/static/uploads/${note.image_filename}" alt="Note Image" style="max-width: 200px;">` : ''}
+  `;
+
+  document.getElementById('notes-list').appendChild(noteElement);
+}
+
+
+
 
 /* Initialize Notes Display */
 displayNotes();

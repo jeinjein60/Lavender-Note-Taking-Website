@@ -1,79 +1,192 @@
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f7f8;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-    form {
-        background-color: #ffffff;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        width: 320px;
-        text-align: center;
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Global reset and box-sizing */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* Crucial for consistent element sizing */
+        }
 
-    h2 {
-        margin-bottom: 20px;
-        color: #333333;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e6e6fa, #fdfbff);
+            /* Lavender to light purple gradient */
+            display: flex;
+            flex-direction: column;
+            /* Stack form and messages vertically */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Ensures the gradient covers the full height */
+            padding: 20px;
+            /* Adds some space around the content on smaller screens */
+        }
 
-    input[type="text"],
-    input[type="password"],
-    select {
-        width: 100%;
-        padding: 12px 15px;
-        margin: 10px 0;
-        border: 1px solid #cccccc;
-        border-radius: 8px;
-        box-sizing: border-box;
-        font-size: 16px;
-    }
+        /* Container for flashed messages, placed above the form */
+        .flash-messages-container {
+            width: 100%;
+            max-width: 380px;
+            /* Match form max-width */
+            margin-bottom: 15px;
+            /* Space between messages and form */
+        }
 
-    button {
-        width: 100%;
-        padding: 12px;
-        background-color: #4A90E2;
-        border: none;
-        color: white;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+        .alert {
+            padding: 12px 15px;
+            /* Slightly more padding */
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #fde6ec;
+            /* Light pink background for alerts */
+            color: #b03b5b;
+            /* Darker pink text for alerts */
+            border: 1px solid #f5c6cb;
+            /* Light red border for alerts */
+            text-align: left;
+            /* Align alert text to the left */
+            margin-bottom: 10px;
+            /* Space between multiple alerts */
+        }
 
-    button:hover {
-        background-color: #357ABD;
-    }
+        /* Specific alert categories can be styled further if needed */
+        /* .alert-success { background-color: #d4edda; color: #155724; border-color: #c3e6cb; } */
+        /* .alert-danger { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; } */
 
-    label {
-        display: block;
-        margin-top: 15px;
-        font-weight: 500;
-        color: #555;
-        text-align: left;
-    }
-</style>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% for category, message in messages %}
-<div class="alert alert-{{ category }}">{{ message }}</div>
-{% endfor %}
-{% endwith %}
+        form {
+            background-color: #fff;
+            padding: 35px;
+            /* Uniform padding */
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(122, 96, 170, 0.15);
+            width: 100%;
+            /* Makes the form responsive */
+            max-width: 380px;
+            /* Limits the maximum width of the form */
+            text-align: center;
+            transition: all 0.3s ease;
+        }
 
-<form action="/login" method="POST">
-    <h2>Purple Note</h2>
+        h2 {
+            margin-bottom: 24px;
+            color: #5e4782;
+            /* Slightly darker purple for heading */
+            font-size: 26px;
+            font-weight: 600;
+        }
 
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            /* Inputs will correctly fill available width */
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            /* Consistent spacing below inputs */
+            border: 1px solid #dcd6f0;
+            border-radius: 10px;
+            background-color: #f9f7ff;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
 
-    <br><br>
-    <button type="submit">Sign In</button>
-    <br><br>
-    <button type="button"><a href="{{ url_for('auth.register') }}">Register</a></button>
+        input:focus {
+            border-color: #a388e4;
+            /* Purple border on focus */
+            outline: none;
+        }
 
-</form>
+        /* General button styles */
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-size: 16px;
+            /* Slightly larger font for buttons */
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease, background-color 0.3s ease;
+            /* Added background-color transition */
+        }
+
+        /* Sign In button specific styles */
+        button[type="submit"] {
+            background: linear-gradient(135deg, #a388e4, #7e6bc5);
+            /* Purple gradient */
+            margin-top: 8px;
+            /* Adjusted margin for spacing after the last input */
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #967edb, #6a59c4);
+            /* Darker purple gradient on hover */
+        }
+
+        /* Styling for the "Register" button/link container */
+        form button[type="button"] {
+            /* More specific selector */
+            background: transparent;
+            /* Make button background transparent */
+            margin-top: 15px;
+            /* Space above this button */
+            padding: 0;
+            /* Remove padding as anchor inside handles it */
+            border: 1px solid #a388e4;
+            /* Optional: add a border to make it look like a button */
+        }
+
+        form button[type="button"] a {
+            display: block;
+            /* Make the anchor fill the button area */
+            padding: 12px;
+            /* Add padding to the anchor for clickable area */
+            text-decoration: none;
+            color: #6a59c4;
+            /* Link color */
+            font-weight: 500;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            border-radius: 9px;
+            /* Slightly less than parent button to avoid overlap with border */
+        }
+
+        form button[type="button"] a:hover {
+            color: #ffffff;
+            /* Text color on hover */
+            background-color: #7e6bc5;
+            /* Background color on hover, matching submit button */
+        }
+
+        /* Removed generic label and a styles as they are not directly used or are overridden */
+    </style>
+</head>
+
+<body>
+
+    <div class="flash-messages-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endwith %}
+    </div>
+
+    <form action="/login" method="POST">
+        <h2>Purple Note</h2> <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <button type="submit">Sign In</button>
+
+        <button type="button"><a href="{{ url_for('auth.register') }}">Register</a></button>
+    </form>
+
+</body>
+
+</html>

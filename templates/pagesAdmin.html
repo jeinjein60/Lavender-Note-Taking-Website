@@ -3,7 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <title>Flask-Admin Styled Page - Dash</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"> -->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    .navbar {
+      background-color: #613f86;
+      color: #fff;
+      padding: 15px 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .navbar .brand {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 50px;
+      bottom: 0;
+      left: 0;
+      width: 220px;
+      background-color: #a17fc4;
+      border-right: 1px solid #ccc;
+      padding-top: 20px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar li {
+      margin: 0;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 20px;
+      color: #ffffff;
+      text-decoration: none;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background-color: #8b6ab1;
+      border-left: 4px solid #573661;
+      color: #ffffff;
+    }
+
+    /* Main Content */
+    .main {
+      margin-left: 240px;
+      padding: 80px 30px 30px 30px;
+      background-color: #d7c7ea;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 12px;
+      font-size: 14px;
+      text-decoration: none;
+      background-color: #8f70a3;
+      color: white;
+      border-radius: 3px;
+      margin-bottom: 15px;
+    }
+
+    .btn.danger {
+      background-color: #bb8bda;
+    }
+
+    .btn.small {
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f9f9f9;
+    }
+
+
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      margin: 0;
+      background-color: #d7c7ea;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 36px;
+    }
+
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .note-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease;
+    }
+
+    .note-card:hover {
+      transform: scale(1.02);
+    }
+
+    .note-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .note-description {
+      font-size: 14px;
+      color: #444;
+      flex-grow: 1;
+    }
+
+    .note-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .note-meta {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .delete-btn {
+      background: #bb8bda;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .delete-btn:hover {
+      background: #bb8bda;
+    } 
+  </style>
 </head>
 <body>
 
@@ -16,6 +196,7 @@
       <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
       <li><a href="{{ url_for('admin_users') }}">Users</a></li>
       <li><a href="{{ url_for('admin_pages') }}" class="active">Pages</a></li>
+      <li><a href="{{ url_for('admin_tasks') }}">Tasks</a></li>
       <li><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
   </div>

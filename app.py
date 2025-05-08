@@ -18,13 +18,21 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    tasks = db.relationship('Task', backref='user', lazy=True)
+    notes = db.relationship('Note', backref='user', lazy=True)
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('notes', lazy=True))
+
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(300), nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 
 @app.route('/')
 def home():
@@ -38,7 +46,15 @@ def homepage():
 @app.route('/tasks')
 @login_required
 def tasks():
-    return render_template('buttons.html')
+    tasks = Task.query.all()
+    return render_template('buttons.html', tasks=tasks)
+
+@app.route('/get_tasks')
+@login_required
+def get_tasks():
+    tasks = Task.query.filter_by(user_id=current_user.id).all()
+    task_data = [{'content': t.content, 'category': t.category} for t in tasks]
+    return jsonify(task_data)
 
 
 @login_manager.user_loader
@@ -147,6 +163,55 @@ def login():
                 return redirect(url_for('homepage'))
         # flash('Invalid credentials.', 'danger')
     return render_template('loginpage.html')
+
+@app.route('/create_task', methods=['POST'])
+@login_required
+def create_task():
+    data = request.get_json()
+    content = data.get('content')
+    category = data.get('category')
+
+    if not content or not category:
+        return jsonify({'error': 'Missing content or category'}), 400
+
+    new_task = Task(content=content, category=category, user_id=current_user.id)
+    db.session.add(new_task)
+    db.session.commit()
+
+    return jsonify({'message': 'Task saved'})
+
+
+
+@app.route('/admin/tasks')
+@login_required
+def admin_tasks():
+    if not current_user.is_admin:
+        return redirect(url_for('index'))
+
+    tasks = Task.query.all()
+
+    # Group tasks by category
+    tasks_by_category = {}
+    for task in tasks:
+        cat = task.category or "Uncategorized"
+        if cat not in tasks_by_category:
+            tasks_by_category[cat] = []
+        tasks_by_category[cat].append(task)
+
+    return render_template("tasksAdmin.html", tasks_by_category=tasks_by_category)
+
+@app.route('/admin/delete_task/<int:task_id>')
+@login_required
+def delete_task_admin(task_id):
+    if not current_user.is_admin:
+        return redirect(url_for('index'))
+
+    task = Task.query.get_or_404(task_id)
+    db.session.delete(task)
+    db.session.commit()
+    return redirect(url_for('admin_tasks'))
+
+
 
 @app.route('/logout')
 @login_required

@@ -111,6 +111,17 @@
 
       document.getElementById(categories[category].listId).appendChild(li);
       taskInput.value = "";
+
+      fetch('/create_task', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: taskText, category })
+      }).then(res => {
+        if (!res.ok) {
+          alert("Failed to save task.");
+        }
+      });
+
     }
 
     function removeTask(button) {

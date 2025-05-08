@@ -190,7 +190,6 @@ def admin_tasks():
 
     tasks = Task.query.all()
 
-    # Group tasks by category
     tasks_by_category = {}
     for task in tasks:
         cat = task.category or "Uncategorized"

@@ -210,10 +210,10 @@
         <div class="note-grid">
             {% for category, tasks in tasks_by_category.items() %}
               <div class="note-card">
-                <div class="note-title">{{ category }}</div>  <!-- CATEGORY TITLE -->
+                <div class="note-title">{{ category }}</div>
           
                 {% for task in tasks %}
-                  <div class="note-description">{{ task.content }}</div> <!-- TASK CONTENT -->
+                  <div class="note-description">{{ task.content }}</div>
                   <div class="note-footer">
                     <div class="note-meta">Created by @{{ task.user.username }}</div>
                     <a href="{{ url_for('delete_task_admin', task_id=task.id) }}" class="delete-btn">Delete</a>

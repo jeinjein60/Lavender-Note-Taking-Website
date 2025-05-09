@@ -7,7 +7,7 @@ from ..models import Note
 from app import db
 from config import Config
 
-note_bp = Blueprint('notes', __name__)
+note_bp = Blueprint('note', __name__)
 
 @note_bp.route('/serve_index')
 @login_required
@@ -55,6 +55,12 @@ def update_note(note_id):
     db.session.commit()
     return jsonify({'message': 'updated'})
 
+@note_bp.route('/feed')
+@login_required
+def show_feed():
+    notes = Note.query.order_by(Note.id.desc()).all()
+    return render_template('feed.html', notes=notes)
+
 @note_bp.route('/api/notes/<int:note_id>', methods=['DELETE'])
 @login_required
 def delete_note(note_id):
@@ -66,3 +72,14 @@ def delete_note(note_id):
     db.session.delete(note)
     db.session.commit()
     return jsonify({'message': 'deleted'})
+
+@note_bp.route('/api/notes/public', methods=['GET'])
+@login_required
+def get_public_notes():
+    notes = Note.query.order_by(Note.id.desc()).limit(20).all()
+    return jsonify([
+        {'title': n.title, 'content': n.content, 'user_id': n.user_id}
+        for n in notes
+    ])
+
+

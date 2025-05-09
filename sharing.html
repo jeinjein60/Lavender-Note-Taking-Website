@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shared Notes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+  <header class="flex items-center justify-between p-6 bg-purple-800 text-white shadow">
+    <h1 class="text-3xl font-bold">📤 Shared Notes</h1>
+    <a href="buttons.html" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold">Back to Portal</a>
+  </header>
+
+  <main class="max-w-4xl mx-auto mt-10 px-6">
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold text-purple-700">Top Community Notes</h2>
+        <select onchange="sortNotes(this.value)" class="border rounded px-3 py-2 text-sm shadow-sm">
+          <option value="recent">Sort by: Most Recent</option>
+          <option value="oldest">Sort by: Oldest</option>
+          <option value="votes-desc">Sort by: Highest Votes</option>
+          <option value="votes-asc">Sort by: Lowest Votes</option>
+        </select>
+      </div>
+
+      <ul id="sharedNotes" class="space-y-6">
+        <!-- Notes will be added here -->
+      </ul>
+
+      <div class="mt-10 text-right">
+        <button onclick="shareNote()" class="bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-800 font-semibold">
+          ➕ Share a Note
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const sharedNotes = [];
+
+    function vote(button, change) {
+      const container = button.closest('li');
+      const span = container.querySelector('span[data-votes]');
+      let currentVotes = parseInt(span.textContent);
+      currentVotes += change;
+      span.textContent = currentVotes;
+
+      const note = sharedNotes.find(n => n.element === container);
+      if (note) note.votes = currentVotes;
+    }
+
+    function shareNote() {
+      const text = prompt("Enter a note to share with the community:");
+      if (!text || text.trim() === "") return;
+
+      const note = {
+        content: text,
+        author: "You",
+        votes: 0,
+        timestamp: new Date(),
+        element: null
+      };
+
+      const li = createNoteElement(note);
+      note.element = li;
+      sharedNotes.unshift(note);
+      document.getElementById('sharedNotes').prepend(li);
+    }
+
+    function createNoteElement(note) {
+      const li = document.createElement('li');
+      li.className = "bg-white p-4 rounded-xl shadow";
+      li.innerHTML = `
+        <p class="text-gray-800 font-medium">${note.content}</p>
+        <div class="flex items-center justify-between mt-3">
+          <span class="text-sm text-gray-500">Shared by ${note.author}</span>
+          <div class="flex items-center gap-3">
+            <button onclick="vote(this, 1)" class="text-green-600 hover:text-green-800">👍</button>
+            <span class="font-semibold" data-votes="${note.votes}">${note.votes}</span>
+            <button onclick="vote(this, -1)" class="text-red-600 hover:text-red-800">👎</button>
+          </div>
+        </div>
+      `;
+      return li;
+    }
+
+    function sortNotes(type) {
+      let sorted = [...sharedNotes];
+      if (type === 'votes-desc') {
+        sorted.sort((a, b) => b.votes - a.votes);
+      } else if (type === 'votes-asc') {
+        sorted.sort((a, b) => a.votes - b.votes);
+      } else if (type === 'oldest') {
+        sorted.sort((a, b) => a.timestamp - b.timestamp);
+      } else {
+        sorted.sort((a, b) => b.timestamp - a.timestamp);
+      }
+
+      const ul = document.getElementById('sharedNotes');
+      ul.innerHTML = '';
+      for (const note of sorted) {
+        ul.appendChild(note.element);
+      }
+    }
+
+    // Add starter notes
+    function addInitialNotes() {
+      const now = new Date();
+      const initial = [
+        {
+          content: '"Finish rough draft of website to review with TA."',
+          author: "Alex",
+          votes: 0,
+          timestamp: new Date(now - 1000 * 60 * 60),
+          element: null
+        },
+        {
+          content: '"Brainstorm theme ideas: workspace, portal, collective notebook."',
+          author: "Mindy",
+          votes: 0,
+          timestamp: new Date(now - 1000 * 60 * 30),
+          element: null
+        }
+      ];
+      for (const note of initial) {
+        const li = createNoteElement(note);
+        note.element = li;
+        sharedNotes.push(note);
+        document.getElementById('sharedNotes').appendChild(li);
+      }
+    }
+
+    addInitialNotes();
+  </script>
+</body>
+</html>

@@ -212,6 +212,25 @@ def delete_task_admin(task_id):
 
 
 
+@app.route('/delete_task', methods=['POST'])
+@login_required
+def delete_task():
+    data = request.get_json()
+    content = data.get('content')
+    category = data.get('category')
+
+    task = Task.query.filter_by(content=content, category=category, user_id=current_user.id).first()
+    if task:
+        db.session.delete(task)
+        db.session.commit()
+        return jsonify({'message': 'Task deleted'})
+    return jsonify({'error': 'Task not found'}), 404
+
+
+
+
+
+
 @app.route('/logout')
 @login_required
 def logout():

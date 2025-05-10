@@ -5,94 +5,161 @@
     <meta charset="UTF-8">
     <title>Create Account</title>
     <style>
+        /* Global reset and box-sizing */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* This is crucial: includes padding and border in the element's total width and height. */
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e9e4f0, #fdfbff);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            /* Ensures the gradient covers the full height */
+            padding: 20px;
+            /* Adds some space around the form on smaller screens */
         }
-    
+
         form {
             background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            width: 320px;
+            padding: 35px;
+            /* Uniform padding */
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(134, 113, 179, 0.15);
+            width: 100%;
+            /* Makes the form responsive */
+            max-width: 380px;
+            /* Limits the maximum width of the form */
             text-align: center;
+            transition: all 0.3s ease-in-out;
         }
-    
+
         h2 {
-            margin-bottom: 20px;
-            color: #333333;
+            margin-bottom: 24px;
+            color: #5a4b81;
+            font-size: 26px;
+            font-weight: 600;
         }
-    
+
         input[type="text"],
         input[type="password"],
         select {
+            /* Kept select styles for consistency if you add one later */
             width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
-            border: 1px solid #cccccc;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 16px;
+            /* Inputs will now correctly fill the available width within the form's padding */
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            /* Consistent spacing below inputs */
+            border: 1px solid #dcd6f0;
+            border-radius: 10px;
+            background-color: #f9f7ff;
+            font-size: 15px;
+            transition: border-color 0.2s ease-in-out;
         }
-    
+
+        input:focus {
+            border-color: #a388e4;
+            outline: none;
+        }
+
+        /* General button styles */
         button {
             width: 100%;
             padding: 12px;
-            background-color: #4A90E2;
             border: none;
             color: white;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-    
-        button:hover {
-            background-color: #357ABD;
-        }
-    
-        label {
-            display: block;
-            margin-top: 15px;
             font-weight: 500;
-            color: #555;
-            text-align: left;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
-        .full-button {
-            display: inline-block;
-            width: 93%;
+
+        /* Submit button specific styles */
+        button[type="submit"] {
+            background: linear-gradient(135deg, #a388e4, #7e6bc5);
+            margin-top: 8px;
+            /* Adjusted margin for spacing after the last input */
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #967edb, #6a59c4);
+        }
+
+        /* Styling for the "Already Have An Account?" button/link container */
+        form>button:nth-of-type(2) {
+            /* Targets the second button element in the form */
+            background: transparent;
+            /* Make button background transparent */
+            margin-top: 15px;
+            /* Space above this button */
+            padding: 0;
+            /* Remove padding if anchor inside handles it */
+            border: 1px solid #a388e4;
+            /* Optional: add a border to make it look like a button */
+        }
+
+        form>button:nth-of-type(2) a {
+            display: block;
+            /* Make the anchor fill the button area */
             padding: 12px;
-            background-color: #4A90E2;
-            color: white;
-            text-align: center;
-            border-radius: 8px;
-            font-size: 16px;
+            /* Add padding to the anchor for clickable area */
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            color: #6a59c4;
+            /* Link color */
+            font-weight: 500;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            border-radius: 10px;
+            /* Match other button radius */
         }
 
-        .full-button:hover {
-            background-color: #357ABD;
+        form>button:nth-of-type(2) a:hover {
+            color: #ffffff;
+            /* Text color on hover */
+            background-color: #7e6bc5;
+            /* Background color on hover */
         }
 
+
+        label {
+            /* Styles for labels (if you decide to add them) */
+            display: block;
+            margin-bottom: 5px;
+            /* Space between label and input */
+            font-weight: 500;
+            color: #6e629f;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .alert {
+            margin-top: 16px;
+            padding: 10px;
+            background-color: #fceef4;
+            color: #b64a6b;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: left;
+            /* Align alert text to the left for readability */
+        }
     </style>
 </head>
 
 <body>
-    <br><br>
+    <!-- <br><br> -->
     <form method="POST">
         <h2>Create Account</h2>
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
-        <br><br>
         <button type="submit">Create Account</button>
-        <br><br>
-        <a href="{{ url_for('login') }}" class="full-button">Already Have An Account? Login!</a>
+        <!-- <br><br> -->
+
+        <button type="button"> <a href="{{ url_for('login') }}">Already Have An Account? Login!</a>
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
         <div class="alert alert-{{ category }}">{{ message }}</div>

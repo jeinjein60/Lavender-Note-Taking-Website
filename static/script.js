@@ -119,6 +119,8 @@ function displayNotes() {
           <div id="noteBtns-container">
             <button id="editBtn" onclick="editNote(${note.id})"><i class="fa-solid fa-pen"></i></button>
             <button id="deleteBtn" onclick="deleteNote(${note.id})"><i class="fa-solid fa-trash"></i></button>
+            <button id="deleteBtn" onclick="shareNote(${note.id})"><i class="fa-solid fa-share-from-square"></i></button>
+
           </div>
         `;
         notesList.appendChild(listItem);
@@ -189,6 +191,18 @@ function updateNote() {
 
 /* Delete Note API */
 function deleteNote(noteId) {
+  fetch(`/api/notes/${noteId}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Note deleted:', data);
+      displayNotes();
+    })
+    .catch(error => console.error('Error deleting note:', error));
+}
+
+function shareNote(noteId) {
   fetch(`/api/notes/${noteId}`, {
     method: 'DELETE'
   })

@@ -5,12 +5,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lavender Notes App</title>
-  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='main-combine.css') }}"> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>/* Front Webpage */
+  :root {
+    --bg-color: #a781d2;
+    --container-bg: #cab6e0;
+    --note-bg: #d1b4e8;
+    --button-bg: #bb8bda;
+    --button-hover: #a280b8;
+    --text-color: #000;
+    --note-text-bg: #d1b4e8;
+    --popup-bg: #ebdff3;
+    --border-color: #a781d2;
+    --input-bg: #ebdff3;
+    --add-bg: #84639a;
+    --blank-bg: #8f70a3;
+    }
+
+    body.light-mode {
+        --bg-color: #fdfdfd;
+        --container-bg: #ffffff;
+        --note-bg: #eeeeee;
+        --button-bg: #cccccc;
+        --button-hover: #bbbbbb;
+        --text-color: #000;
+        --note-text-bg: #f2f2f2;
+        --popup-bg: #ffffff;
+        --border-color: #aaaaaa;
+        --input-bg: #f9f9f9;
+        --add-bg: #a4a4a4;
+        --blank-bg: #c4c4c4;
+    }
+
+    body.dark-mode {
+        --bg-color: #121212;
+        --container-bg: #1e1e1e;
+        --note-bg: #2e2e2e;
+        --button-bg: #616161;
+        --button-hover: #8d8d8d;
+        --text-color: #ffffff;
+        --note-text-bg: #2e2e2e;
+        --popup-bg: #2a2a2a;
+        --border-color: #444444;
+        --input-bg: #333333;
+        --add-bg: #353535;
+        --blank-bg: #737373;
+    }
+
+    body.purple-mode {
+        --bg-color: #a781d2;
+        --container-bg: #cab6e0;
+        --note-bg: #d1b4e8;
+        --button-bg: #bb8bda;
+        --button-hover: #a280b8;
+        --text-color: #000;
+        --note-text-bg: #d1b4e8;
+        --popup-bg: #ebdff3;
+        --border-color: #a781d2;
+        --input-bg: #ebdff3;
+        --add-bg: #84639a;
+        --blank-bg: #8f70a3;
+    }
+
     body {
         font-family: 'Times New Roman', Serif;
-        background-color: #a781d2;
+        background-color: var(--bg-color);
+        color: var(--text-color);
         margin: 0;
         display: flex;
         align-items: center;
@@ -19,7 +79,7 @@
     }
     
     #container {
-        background-color: #cab6e0;
+        background-color: var(--container-bg);
         border-radius: 8px;
         box-shadow: 0px 10px 15px 10px rgba(0, 0, 0, 0.3);
         overflow: hidden;
@@ -40,7 +100,7 @@
     }
     
     .blankDiv {
-        background-color: #8f70a3;
+        background-color: var(--blank-bg);
         border: none;
         padding: 20px;
         border-radius: 8px;
@@ -53,8 +113,8 @@
     }
     
     #addNoteDiv {
-        background-color: #b28ccb;
-        border: 1px solid #b28ccb;
+        background-color: var(--button-bg);
+        border: 1px solid var(--button-bg);
         padding: 20px;
         border-radius: 8px;
         height: 240px;
@@ -68,13 +128,13 @@
     
     #addNoteDiv:hover {
         transition: 0.25s;
-        background-color: #a280b8
+        background-color: var(--button-hover);
     }
     
     
     #addNoteDiv i {
         font-size: 70px;
-        color: #84639a;
+        color: var(--add-bg);
     }
     
     
@@ -95,7 +155,7 @@
     }
     
     li {
-        background-color: #d1b4e8;
+        background-color: var(--note-bg);
         margin: 5px 0;
         padding: 20px;
         border-radius: 8px;
@@ -119,8 +179,8 @@
     
     #editBtn,
     #deleteBtn {
-        background-color: #bb8bda;
-        color: #84639a;
+        background-color: var(--button-bg);
+        color: var(--add-bg);
         border: none;
         padding: 5px 10px;
         margin: 0 5px;
@@ -131,15 +191,15 @@
     }
     
     #editBtn {
-        background-color: #bb8bda;
+        background-color: var(--button-bg);
     }
     
     #deleteBtn:hover {
-        background-color: #a280b8;
+        background-color: var(--button-hover);
     }
     
     #editBtn:hover {
-        background-color: #a280b8;
+        background-color: var(--button-hover);
     }
     
     
@@ -151,9 +211,9 @@
         transform: translate(-50%, -50%);
         width: 450px;
         height: 400px;
-        background-color: rgb(235, 223, 243);
-        border: 1px solid rgb(225, 212, 233);
+        background-color: var(--popup-bg);
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
         padding: 20px;
         border-radius: 8px;
         display: flex;
@@ -170,7 +230,7 @@
         padding: 10px;
         box-sizing: border-box;
         border-radius: 4px;
-        border: 2px solid #a781d2;
+        border: 2px solid var(--border-color);
     }
     
     #btn-container {
@@ -180,8 +240,8 @@
     #submitBtn,
     #closeBtn {
         width: 100px;
-        background-color: #bb8bda;
-        color: rgb(235, 223, 243);
+        background-color: var(--button-bg);
+        color: var(--popup-bg);
         font-size: 14px;
         border: none;
         border-radius: 5px;
@@ -191,7 +251,7 @@
     }
     
     #closeBtn {
-        background-color: #bb8bda;
+        background-color: var(--button-bg);
     }
     
     
@@ -203,9 +263,8 @@
         transform: translate(-50%, -50%);
         width: 450px;
         height: 400px;
-        background-color: rgb(235, 223, 243);
-        border: 1px solid rgb(225, 212, 233);
-        ;
+        background-color: var(--popup-bg);
+        border: 1px solid var(--border-color);
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         padding: 20px;
         border-radius: 8px;
@@ -219,8 +278,8 @@
     #submitBtn,
     #closeBtn {
         width: 100px;
-        background-color: #bb8bda;
-        color: #84639a;
+        background-color: var(--button-bg);
+        color: var(--add-bg);
         font-size: 14px;
         border: none;
         border-radius: 5px;
@@ -230,7 +289,7 @@
     }
     
     #closeBtn {
-        background-color: #a280b8;
+        background-color: var(--button-hover);
     }
     
     /* Misc */
@@ -239,8 +298,8 @@
     }
     
     #format-options button {
-        background-color: #bb8bda;
-        color: #84639a;
+        background-color: var(--button-bg);
+        color: var(--add-bg);
         border: none;
         border-radius: 4px;
         padding: 5px;
@@ -249,7 +308,7 @@
     }
     
     #format-options button:hover {
-        background-color: #a280b8;
+        background-color: var(--button-hover);
     }
     
     #note-title {
@@ -258,12 +317,12 @@
         padding: 10px;
         box-sizing: border-box;
         border-radius: 4px;
-        border: 2px solid #bb8bda;
-        background: rgb(235, 223, 243);
+        border: 2px solid var(--button-bg);
+        background: var(--input-bg);
     }
     
     #note-editor {
-        border: 1px solid #bb8bda;
+        border: 1px solid var(--button-bg);
         border-radius: 8px;
         padding: 10px;
         width: 90%;
@@ -282,13 +341,13 @@
         padding: 10px;
         box-sizing: border-box;
         word-wrap: break-word;
-        background: #d1b4e8;
+        background: var(--note-bg);
         border-radius: 5px;
     }
     
     #format-bar button {
-        background: #bb8bda;
-        color: #84639a;
+        background: var(--button-bg);
+        color: var(--add-bg);
         border: none;
         margin: 5px;
         padding: 5px 10px;
@@ -297,7 +356,7 @@
     }
     
     #format-bar button:hover {
-        background: #a280b8;
+        background: var(--button-hover);
     }
     
     #logoutDiv {
@@ -322,7 +381,7 @@
     #top-buttons {
         position: absolute;
         top: 20px;
-        right: 30px;
+        right: 5px;
         display: flex;
         gap: 10px;
         z-index: 1000;
@@ -331,7 +390,7 @@
       .top-button {
         display: inline-block;
         padding: 10px 16px;
-        background-color: #a06cd5;
+        background-color: var(--button-bg);
         color: white;
         text-decoration: none;
         border-radius: 6px;
@@ -341,13 +400,44 @@
       }
     
       .top-button:hover {
-        background-color: #8a4fb5;
-      }</style>
+        background-color: var(--button-hover);
+      }
+        #left-buttons {
+        position: absolute;
+        top: 20px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        z-index: 1000;
+      }
+    
+      .left-button {
+        display: inline-block;
+        padding: 10px 16px;
+        background-color: var(--button-bg);
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+    
+      .left-button:hover {
+        background-color: var(--button-hover);
+      }
+      </style>
 </head>
 
 <body>
+  <div id="left-buttons">
+    <button class="left-button" onclick="setTheme('light')">Light</button>
+    <button class="left-button" onclick="setTheme('dark')">Dark</button>
+    <button class="left-button" onclick="setTheme('purple')">Purple</button>
+  </div>
   <div id="top-buttons">
-    <a href="{{ url_for('homepage') }}" class="top-button">Home Page</a>
+    <a href="{{ url_for('homepage') }}" class="top-button">HomePage</a>
+    <a href="{{ url_for('feed') }}" class="top-button">Share</a>
     <a href="{{ url_for('logout') }}" id="logoutButton">Logout</a>
   </div>
   <div id="container">
@@ -362,6 +452,19 @@
   </div>
   </div>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    function setTheme(theme) {
+        document.body.classList.remove('light-mode', 'dark-mode', 'purple-mode');
+        document.body.classList.add(`${theme}-mode`);
+        localStorage.setItem('theme', theme);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'purple';
+        setTheme(savedTheme);
+    });
+    </script>
+
 </body>
 
 </html>

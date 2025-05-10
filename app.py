@@ -271,6 +271,11 @@ def delete_note(note_id):
     db.session.commit()
     return jsonify({'message': 'deleted'})
 
+@app.route('/feed')
+@login_required
+def feed():
+    return render_template('feed.html')
+
 with app.app_context():
     db.create_all()
     if not User.query.filter_by(username='admin').first():

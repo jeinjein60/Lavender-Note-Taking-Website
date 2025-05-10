@@ -10,7 +10,7 @@
   <header class="flex items-center justify-between p-6 bg-purple-800 text-white shadow">
     <h1 class="text-3xl font-bold">Purple Note</h1>
     <div class="space-x-4">
-      <button class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold">Share</button>
+      <a href="{{ url_for('feed') }}" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold incline-block">Share</a>
       <a href="{{ url_for('homepage') }}" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold inline-block">Home</a>
       <a href="{{ url_for('logout') }}" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold inline-block">Logout</a>
     </div>

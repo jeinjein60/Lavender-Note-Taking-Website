@@ -7,22 +7,7 @@
   <title>Lavender Notes App</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>/* Front Webpage */
-  :root {
-    --bg-color: #a781d2;
-    --container-bg: #cab6e0;
-    --note-bg: #d1b4e8;
-    --button-bg: #bb8bda;
-    --button-hover: #a280b8;
-    --text-color: #000;
-    --note-text-bg: #d1b4e8;
-    --popup-bg: #ebdff3;
-    --border-color: #a781d2;
-    --input-bg: #ebdff3;
-    --add-bg: #84639a;
-    --blank-bg: #8f70a3;
-    }
-
-    body.light-mode {
+    body.light{
         --bg-color: #fdfdfd;
         --container-bg: #ffffff;
         --note-bg: #eeeeee;
@@ -37,7 +22,7 @@
         --blank-bg: #c4c4c4;
     }
 
-    body.dark-mode {
+    body.dark{
         --bg-color: #121212;
         --container-bg: #1e1e1e;
         --note-bg: #2e2e2e;
@@ -52,7 +37,7 @@
         --blank-bg: #737373;
     }
 
-    body.purple-mode {
+    body.purple{
         --bg-color: #a781d2;
         --container-bg: #cab6e0;
         --note-bg: #d1b4e8;
@@ -429,12 +414,7 @@
       </style>
 </head>
 
-<body>
-  <div id="left-buttons">
-    <button class="left-button" onclick="setTheme('light')">Light</button>
-    <button class="left-button" onclick="setTheme('dark')">Dark</button>
-    <button class="left-button" onclick="setTheme('purple')">Purple</button>
-  </div>
+<body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}">
   <div id="top-buttons">
     <a href="{{ url_for('homepage') }}" class="top-button">HomePage</a>
     <a href="{{ url_for('feed') }}" class="top-button">Share</a>
@@ -452,18 +432,6 @@
   </div>
   </div>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
-  <script>
-    function setTheme(theme) {
-        document.body.classList.remove('light-mode', 'dark-mode', 'purple-mode');
-        document.body.classList.add(`${theme}-mode`);
-        localStorage.setItem('theme', theme);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('theme') || 'purple';
-        setTheme(savedTheme);
-    });
-    </script>
 
 </body>
 

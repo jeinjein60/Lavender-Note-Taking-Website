@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Theme Selector</title>
+  <title>Home Page</title>
   <style>
-    :root {
-      --bg-color: #e1d8eb;
+    body.purple {
+      --bg-color: #f5f0fa;
       --text-color: #2e003e;
       --sidebar-bg: #a675c9;
       --project-bg: #c59be9;
@@ -15,7 +15,26 @@
       --template-bg: #b388eb;
       --template-hover: #a06cd5;
     }
-
+    body.light {
+      --bg-color: #dadada;
+      --text-color: #000000;
+      --sidebar-bg: #9c9b9b;
+      --project-bg: #eeeeee;
+      --button-bg: #888888;
+      --button-hover: #666666;
+      --template-bg: #dddddd;
+      --template-hover: #bbbbbb;
+    }
+    body.dark {
+      --bg-color: #1e1e1e;
+      --text-color: #f0f0f0;
+      --sidebar-bg: #333333;
+      --project-bg: #444444;
+      --button-bg: #555555;
+      --button-hover: #777777;
+      --template-bg: #666666;
+      --template-hover: #888888;
+    }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -44,11 +63,14 @@
     }
 
     .project {
+      display: block;
+      text-decoration: none;
       background-color: var(--project-bg);
       margin-bottom: 10px;
-      padding: 10px;
+      padding: 10px 15px;
       border-radius: 8px;
       cursor: pointer;
+      color: var(--text-color); 
     }
 
     .project:hover {
@@ -123,14 +145,14 @@
     }
   </style>
 </head>
-<body>
+<body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}">
   <div class="sidebar">
-    <h2>Welcome User!</h2>
+    <h2>Welcome {{ current_user.username }}!</h2>
     <div class="project-section">
       <h3>Customize:</h3>
-      <div class="project" onclick="setTheme('light')">Light Mode</div>
-      <div class="project" onclick="setTheme('dark')">Dark Mode</div>
-      <div class="project" onclick="setTheme('purple')">Purple Default Mode</div>
+          <a href="{{ url_for('set_theme', theme='light') }}" class="project">Light Mode</a>
+          <a href="{{ url_for('set_theme', theme='dark') }}" class="project">Dark Mode</a>
+          <a href="{{ url_for('set_theme', theme='purple') }}" class="project">Purple Mode</a>
     </div>
   </div>
 
@@ -150,40 +172,5 @@
       </a>
     </div>
   </div>
-
-  <script>
-    function setTheme(mode) {
-      const root = document.documentElement;
-      if (mode === 'light') {
-        root.style.setProperty('--bg-color', '#dadada');
-        root.style.setProperty('--text-color', '#000000');
-        root.style.setProperty('--sidebar-bg', '#9c9b9b');
-        root.style.setProperty('--project-bg', '#eeeeee');
-        root.style.setProperty('--button-bg', '#888888');
-        root.style.setProperty('--button-hover', '#666666');
-        root.style.setProperty('--template-bg', '#dddddd');
-        root.style.setProperty('--template-hover', '#bbbbbb');
-      } else if (mode === 'dark') {
-        root.style.setProperty('--bg-color', '#1e1e1e');
-        root.style.setProperty('--text-color', '#f0f0f0');
-        root.style.setProperty('--sidebar-bg', '#333333');
-        root.style.setProperty('--project-bg', '#444444');
-        root.style.setProperty('--button-bg', '#555555');
-        root.style.setProperty('--button-hover', '#777777');
-        root.style.setProperty('--template-bg', '#666666');
-        root.style.setProperty('--template-hover', '#888888');
-      } else if (mode === 'purple') {
-        root.style.setProperty('--bg-color', '#f5f0fa');
-        root.style.setProperty('--text-color', '#2e003e');
-        root.style.setProperty('--sidebar-bg', '#a675c9');
-        root.style.setProperty('--project-bg', '#c59be9');
-        root.style.setProperty('--button-bg', '#a06cd5');
-        root.style.setProperty('--button-hover', '#8a4fb5');
-        root.style.setProperty('--template-bg', '#b388eb');
-        root.style.setProperty('--template-hover', '#a06cd5');
-      }
-    }
-
-  </script>
 </body>
 </html>

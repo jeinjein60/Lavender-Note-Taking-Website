@@ -4,20 +4,56 @@
   <meta charset="UTF-8">
   <title>Admin Dashboard</title>
   <style>
-        :root {
-        --bg-color: #d7c7ea;
-        --text-color: #2e003e;
-        --table-text-color: #000;
-        --table-bgtop-color: #dcdcdc;
-        --table-bgbottom-color: #fff;
-        --navbar-bg: #613f86;
-        --sidebar-bg: #a17fc4;
-        --bar-text-color: #fff; 
-        --sidebarLeft-color: #573661;
-        --sidebarHover-color: #8b6ab1;
-        --card-bg: #ffffff;
-        --card-text: #000000;
-        --heading-color: #2e003e;
+    body.purple {
+      --bg-color: #d7c7ea;
+      --text-color: #2e003e;
+      --table-text-color: #000;
+      --table-bgtop-color: #dcdcdc;
+      --table-bgbottom-color: #fff;
+      --navbar-bg: #613f86;
+      --sidebar-bg: #a17fc4;
+      --bar-text-color: #fff; 
+      --sidebarLeft-color: #573661;
+      --sidebarHover-color: #8b6ab1;
+      --card-bg: #ffffff;
+      --card-text: #000000;
+      --heading-color: #2e003e;
+      --edit-button: #8f70a3;
+      --delete-button: #bb8bda;
+    }
+    body.light {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --table-text-color: #000000;
+      --table-bgtop-color: #dddddd;
+      --table-bgbottom-color: #f9f9f9;
+      --navbar-bg: #e0e0e0;
+      --sidebar-bg: #f0f0f0;
+      --bar-text-color: #000000; 
+      --sidebarLeft-color: #cccccc;
+      --sidebarHover-color: #dddddd;
+      --card-bg: #ffffff;
+      --card-text: #000000;
+      --heading-color: #2e003e;
+      --edit-button: #9a9a9a;
+      --delete-button: #bababa;
+    }
+    body.dark {
+      --bg-color: #1e1e1e;
+      --text-color: #f0f0f0;
+      --table-text-color: #f0f0f0;
+      --table-bgtop-color: #555555;
+      --table-bgbottom-color: #777777;
+      --navbar-bg: #181818;
+      --sidebar-bg: #333333;
+      --bar-text-color: #f0f0f0; 
+      --sidebarLeft-color: #222222;
+      --sidebarHover-color: #1b1b1b;
+      --card-bg: #2a2a2a;
+      --card-text: #f0f0f0;
+      --heading-color: #f0f0f0;
+      --edit-button: #494949;
+      --delete-button: #5c5c5c;
     }
     * {
       box-sizing: border-box;
@@ -97,14 +133,14 @@
       padding: 8px 12px;
       font-size: 14px;
       text-decoration: none;
-      background-color: #8f70a3;
-      color: white;
+      background-color: var(--edit-button);
+      color: var(--bar-text-color);
       border-radius: 3px;
       margin-bottom: 15px;
     }
 
     .btn.danger {
-      background-color: #bb8bda;
+      background-color: var(--delete-button);
     }
 
     .btn.small {
@@ -175,7 +211,7 @@
 
     .note-description {
       font-size: 14px;
-      color: #444;
+      color: var(--table-text-color);
       flex-grow: 1;
     }
 
@@ -192,8 +228,8 @@
     }
 
     .delete-btn {
-      background: #bb8bda;
-      color: white;
+      background: var(--delete-button);
+      color: var(--bar-text-color);
       border: none;
       padding: 6px 12px;
       border-radius: 6px;
@@ -202,11 +238,11 @@
     }
 
     .delete-btn:hover {
-      background: #bb8bda;
+      background: var(--delete-button);
     } 
   </style>
 </head>
-<body>
+<body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}"></body>
 
   <div class="navbar">
     <span class="brand">Admin Homepage</span>
@@ -218,9 +254,9 @@
       <li><a href="{{ url_for('admin_users') }}">Users</a></li>
       <li><a href="{{ url_for('admin_pages') }}">Pages</a></li>
       <li><a href="{{ url_for('admin_tasks') }}">Tasks</a></li>
-      <li><a href="#" onclick="setTheme('light')">Light Mode</a></li>
-      <li><a href="#" onclick="setTheme('dark')">Dark Mode</a></li>
-      <li><a href="#" onclick="setTheme('purple')">Purple Mode</a></li>
+      <li><a href="{{ url_for('set_theme', theme='light') }}">Light Mode</a></li>
+      <li><a href="{{ url_for('set_theme', theme='dark') }}">Dark Mode</a></li>
+      <li><a href="{{ url_for('set_theme', theme='purple') }}">Purple Mode</a></li>
       <li><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
   </div>
@@ -244,58 +280,6 @@
       </tbody>
     </table>
   </div>
-  <script>
-    function setTheme(mode) {
-      const root = document.documentElement;
-      if (mode === 'light') {
-        root.style.setProperty('--bg-color', '#ffffff');
-        root.style.setProperty('--text-color', '#000000');
-        root.style.setProperty('--table-text-color', '#000000');
-        root.style.setProperty('--table-bgtop-color', '#dddddd');
-        root.style.setProperty('--table-bgbottom-color', '#f9f9f9');
-        root.style.setProperty('--navbar-bg', '#e0e0e0');
-        root.style.setProperty('--sidebar-bg', '#f0f0f0');
-        root.style.setProperty('--bar-text-color', '#000000');
-        root.style.setProperty('--sidebarLeft-color', '#cccccc');
-        root.style.setProperty('--sidebarHover-color', '#dddddd');
-        root.style.setProperty('--card-bg', '#ffffff');
-        root.style.setProperty('--card-text', '#000000');
-        root.style.setProperty('--heading-color', '#2e003e');
-
-      } else if (mode === 'dark') {
-        root.style.setProperty('--bg-color', '#1e1e1e');
-        root.style.setProperty('--text-color', '#f0f0f0');
-        root.style.setProperty('--table-text-color', '#f0f0f0');
-        root.style.setProperty('--table-bgtop-color', '#555555');
-        root.style.setProperty('--table-bgbottom-color', '#777777');
-        root.style.setProperty('--navbar-bg', '#181818');
-        root.style.setProperty('--sidebar-bg', '#333333');
-        root.style.setProperty('--bar-text-color', '#f0f0f0');
-        root.style.setProperty('--sidebarLeft-color', '#222222');
-        root.style.setProperty('--sidebarHover-color', '#1b1b1b');
-        root.style.setProperty('--card-bg', '#2a2a2a');
-        root.style.setProperty('--card-text', '#f0f0f0');
-        root.style.setProperty('--heading-color', '#f0f0f0');
-
-      } else if (mode === 'purple') {
-        root.style.setProperty('--bg-color', '#d7c7ea');
-        root.style.setProperty('--text-color', '#2e003e');
-        root.style.setProperty('--table-text-color', '#000');
-        root.style.setProperty('--table-bgtop-color', '#dcdcdc');
-        root.style.setProperty('--table-bgbottom-color', '#fff');
-        root.style.setProperty('--navbar-bg', '#613f86');
-        root.style.setProperty('--sidebar-bg', '#a17fc4');
-        root.style.setProperty('--bar-text-color', '#fff'); 
-        root.style.setProperty('--sidebarLeft-color', '#573661');
-        root.style.setProperty('--sidebarHover-color', '#8b6ab1');
-        root.style.setProperty('--card-bg', '#ffffff');
-        root.style.setProperty('--card-text', '#000000');
-        root.style.setProperty('--heading-color', '#2e003e');
-      }
-    }
-
-  </script>
-
 </body>
 </html>
 

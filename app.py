@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     tasks = db.relationship('Task', backref='user', lazy=True)
     notes = db.relationship('Note', backref='user', lazy=True)
+    theme = db.Column(db.String(20), default="purple")
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,6 +33,18 @@ class Task(db.Model):
     content = db.Column(db.String(300), nullable=False)
     category = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+
+
+@app.route('/set_theme/<theme>')
+@login_required
+def set_theme(theme):
+    if theme not in ['light', 'dark', 'purple']:
+        return "Invalid theme", 400
+    current_user.theme = theme
+    db.session.commit()
+    return redirect(request.referrer or url_for('index'))
 
 
 @app.route('/')

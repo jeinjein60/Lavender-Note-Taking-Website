@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* You might want to consolidate common styles into a base.html template later */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            /* bg-gray-100 */
+            color: #374151;
+            /* text-gray-800 */
+        }
+
+        aside {
+            /* Sidebar styles */
+            width: 16rem;
+            height: 100vh;
+            background-color: #6b21a8;
+            /* bg-purple-800 */
+            color: white;
+            padding: 1.5rem;
+            space-y: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        aside h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        aside a {
+            display: block;
+            color: white;
+            padding: 0.5rem 0;
+        }
+
+        aside a:hover {
+            color: #d8b4fe;
+            /* hover:text-purple-300 */
+        }
+
+        .main-content {
+            /* Main content area */
+            margin-left: 16rem;
+            flex-grow: 1;
+        }
+
+        header {
+            /* Header styles */
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #6b21a8;
+        }
+
+        .button {
+            /* Button styles */
+            background-color: #7e22ce;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .button:hover {
+            background-color: #6b21a8;
+        }
+
+        main {
+            padding: 1.5rem;
+            space-y: 1.5rem;
+        }
+
+        .profile-card {
+            /* Profile card styles */
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            max-width: 400px;
+            margin: 2rem auto;
+            /* Center the card */
+            text-align: center;
+        }
+
+        .profile-card h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a0e7e;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-info p {
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            color: #4b5563;
+        }
+
+        .profile-info strong {
+            color: #6b21a8;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800 flex">
+
+    <aside class="w-64 h-screen bg-purple-800 text-white p-6 space-y-4 fixed top-0 left-0">
+        <h2 class="text-2xl font-bold mb-6">Purple Note</h2>
+        <nav class="space-y-4">
+            <a href="{{ url_for('main.feed') }}" class="block text-white hover:text-purple-300">🏠 Feed</a>
+            <a href="{{ url_for('note.serve_index') }}" class="block text-white hover:text-purple-300">📝 My Notes</a>
+            <a href="{{ url_for('main.explore') }}" class="block text-white hover:text-purple-300">🔍 Explore</a>
+            <a href="{{ url_for('main.profile') }}" class="block text-white hover:text-purple-300">👤 Profile</a>
+            <a href="{{ url_for('auth.logout') }}" class="block text-white hover:text-purple-300">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <header>
+            <h1 class="text-xl font-bold text-purple-800">User Profile</h1>
+            <a href="{{ url_for('note.serve_index') }}" class="button">My Notes</a>
+        </header>
+
+        <main class="p-6 space-y-6">
+            <div class="profile-card">
+                <h2>Your Profile Information</h2>
+                <div class="profile-info">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>User ID:</strong> {{ user.id }}</p>
+                    <p><strong>Admin Status:</strong> {{ 'Yes' if user.is_admin else 'No' }}</p>
+                    <p class="mt-4 text-sm text-gray-600">
+                        (More profile details would go here if available in your User model.)
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

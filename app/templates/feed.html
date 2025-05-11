@@ -18,7 +18,7 @@
             <a href="/serve_index" class="block text-white hover:text-purple-300">📝 My Notes</a>
             <a href="#" class="block text-white hover:text-purple-300">🔍 Explore</a>
             <a href="#" class="block text-white hover:text-purple-300">👤 Profile</a>
-            <a href="/logout" class="block text-white hover:text-purple-300">🚪 Logout</a>
+            <a href="{{ url_for('auth.logout') }}" class="block text-white hover:text-purple-300">🚪 Logout</a>
         </nav>
     </aside>
 

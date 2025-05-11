@@ -15,7 +15,7 @@ class Note(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     image_filename = db.Column(db.String(300))
     created_at = db.Column(db.DateTime, default=datetime.utcnow) 
-    user = db.relationship('User', backref=db.backref('notes', lazy=True))
+    user = db.relationship('User', backref=db.backref('note', lazy=True))
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)

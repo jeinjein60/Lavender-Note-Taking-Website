@@ -40,7 +40,7 @@ def login():
             if user.is_admin:
                 return redirect(url_for('admin.admin_dashboard'))
             else:
-                return redirect(url_for('notes.serve_index'))
+                return redirect(url_for('main.feed'))
         flash('Invalid credentials.', 'danger')
     return render_template('loginpage.html')
 

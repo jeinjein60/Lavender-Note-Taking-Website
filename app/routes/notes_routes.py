@@ -1,10 +1,10 @@
+# app/notes/routes.py
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
-from app import login_manager
-from ..models import Note
 from app import db
+from app.models import Note
 from config import Config
 
 note_bp = Blueprint('note', __name__)
@@ -55,12 +55,6 @@ def update_note(note_id):
     db.session.commit()
     return jsonify({'message': 'updated'})
 
-@note_bp.route('/feed')
-@login_required
-def show_feed():
-    notes = Note.query.order_by(Note.id.desc()).all()
-    return render_template('feed.html', notes=notes)
-
 @note_bp.route('/api/notes/<int:note_id>', methods=['DELETE'])
 @login_required
 def delete_note(note_id):
@@ -81,5 +75,3 @@ def get_public_notes():
         {'title': n.title, 'content': n.content, 'user_id': n.user_id}
         for n in notes
     ])
-
-

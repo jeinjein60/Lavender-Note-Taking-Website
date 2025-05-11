@@ -172,7 +172,7 @@
         {% endwith %}
     </div>
 
-    <form action="/login" method="POST">
+    <form action="{{ url_for('auth.login') }}" method="POST">
         <h2>Purple Note</h2> <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
 

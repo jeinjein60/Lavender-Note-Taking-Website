@@ -3,8 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <title>Edit User</title>
-  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"> -->
   <style>
+        body.purple {
+            --bg-color: #d7c7ea;
+            --grad1: #d7c7ea;
+            --grad2: #d7c7ea;
+            --form-bg: #a17fc4;
+            --head2-text: #5e4782;
+            --input-bg: #8b6ab1;
+            --input-text-color: #fff;
+            --input-border: #573661;
+            --button-bg: #5f407d;
+            --button-bg-hover: #8562a7;
+            --button-text-color: #fff;
+        }
+        body.light {
+            --bg-color: #dcdcdc;
+            --grad1: #ececec;
+            --grad2: #dfdfdf;
+            --form-bg: #ebebeb;
+            --head2-text: #151515;
+            --input-bg: #ffffff;
+            --input-text-color: #000;
+            --input-border: #979797;
+            --button-bg: #b0b0b0;
+            --button-bg-hover: #8f8f8f;
+            --button-text-color: #202020;
+        }
+        body.dark {
+            --bg-color: #3a3a3a;
+            --grad1: #343434;
+            --grad2: #282828;
+            --form-bg: #464646;
+            --head2-text: #f0f0f0;
+            --input-bg: #474747;
+            --input-text-color: #f1f1f1;
+            --input-border: #000000;
+            --button-bg: #676767;
+            --button-bg-hover: #717171;
+            --button-text-color: #fff;
+        }
         /* Global reset and box-sizing */
         * {
             margin: 0;
@@ -15,7 +53,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e6e6fa, #fdfbff);
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
             /* Lavender to light purple gradient */
             display: flex;
             flex-direction: column;
@@ -27,6 +65,9 @@
             padding: 20px;
             /* Adds some space around the content on smaller screens */
         }
+        label {
+            color: var(--input-text-color)
+        }
 
         /* Container for flashed messages, placed above the form */
         .flash-messages-container {
@@ -37,30 +78,12 @@
             /* Space between messages and form */
         }
 
-        .alert {
-            padding: 12px 15px;
-            /* Slightly more padding */
-            border-radius: 8px;
-            font-size: 14px;
-            background-color: #fde6ec;
-            /* Light pink background for alerts */
-            color: #b03b5b;
-            /* Darker pink text for alerts */
-            border: 1px solid #f5c6cb;
-            /* Light red border for alerts */
-            text-align: left;
-            /* Align alert text to the left */
-            margin-bottom: 10px;
-            /* Space between multiple alerts */
-        }
-
-
         form {
-            background-color: #fff;
+            background-color: var(--form-bg);
             padding: 35px;
             /* Uniform padding */
             border-radius: 16px;
-            box-shadow: 0 12px 35px rgba(122, 96, 170, 0.15);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
             width: 100%;
             /* Makes the form responsive */
             max-width: 380px;
@@ -71,7 +94,7 @@
 
         h2 {
             margin-bottom: 24px;
-            color: #5e4782;
+            color: var(--head2-text);
             /* Slightly darker purple for heading */
             font-size: 26px;
             font-weight: 600;
@@ -84,25 +107,20 @@
             padding: 12px 14px;
             margin-bottom: 18px;
             /* Consistent spacing below inputs */
-            border: 1px solid #dcd6f0;
+            border: 1px solid var(--input-border);
             border-radius: 10px;
-            background-color: #f9f7ff;
+            background-color: var(--input-bg);
             font-size: 15px;
             transition: border-color 0.2s;
-        }
-
-        input:focus {
-            border-color: #a388e4;
-            /* Purple border on focus */
-            outline: none;
-        }
+            color: var(--input-text-color);
+        }   
 
         /* General button styles */
         button {
             width: 100%;
             padding: 12px;
             border: none;
-            color: white;
+            color: var(--button-text-color);
             border-radius: 10px;
             font-size: 16px;
             /* Slightly larger font for buttons */
@@ -114,14 +132,14 @@
 
         /* Sign In button specific styles */
         button[type="submit"] {
-            background: linear-gradient(135deg, #a388e4, #7e6bc5);
+            background: var(--button-bg);
             /* Purple gradient */
             margin-top: 8px;
             /* Adjusted margin for spacing after the last input */
         }
 
         button[type="submit"]:hover {
-            background: linear-gradient(135deg, #967edb, #6a59c4);
+            background: var(--button-bg-hover);
             /* Darker purple gradient on hover */
         }
 
@@ -134,7 +152,7 @@
             /* Space above this button */
             padding: 0;
             /* Remove padding as anchor inside handles it */
-            border: 1px solid #a388e4;
+            border: 1px solid var(--button-bg-hover);
             /* Optional: add a border to make it look like a button */
         }
 
@@ -144,7 +162,7 @@
             padding: 12px;
             /* Add padding to the anchor for clickable area */
             text-decoration: none;
-            color: #6a59c4;
+            color: var(--button-bg);
             /* Link color */
             font-weight: 500;
             transition: color 0.3s ease, background-color 0.3s ease;
@@ -153,14 +171,14 @@
         }
 
         form button[type="button"] a:hover {
-            color: #ffffff;
+            color: var(--form-bg);
             /* Text color on hover */
-            background-color: #7e6bc5;
+            background-color: var(--head2-text);
             /* Background color on hover, matching submit button */
         }
     </style>
 </head>
-<body>
+<body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}"></body>
   <div class="main">
     <h2>Edit {{ user.username }}</h2>
     <form method="POST">

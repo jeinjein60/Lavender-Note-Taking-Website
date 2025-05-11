@@ -6,42 +6,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Note Feed</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body.purple{
+            --bg-color: #fdfdfd;
+            --bg-text: #1f2937;
+            --aside-bg: #7021b6;
+            --aside-text: #fff;
+            --top: #fff;
+            --button-bg: #6b21a8;
+            --note-text: #374151;
+            --aside-hover: #d8b4fe;
+            --top-hover: #9b61ce;
+            --titletop: #7021b6;
+        }
+        body.light{
+            --bg-color: #fdfdfd;
+            --bg-text: #1f2937;
+            --aside-bg: #c9c9c9;
+            --aside-text: #000000;
+            --top: #fff;
+            --button-bg: #a3a3a3;
+            --note-text: #374151;
+            --aside-hover: #424242;
+            --top-hover: #747474;
+            --titletop: #000;
+        }
+        body.dark{
+            --bg-color: #373737;
+            --bg-text: #ffffff;
+            --aside-bg: #222222;
+            --aside-text: #fff;
+            --top: #3b3b3b;
+            --button-bg: #616161;
+            --note-text: #ffffff;
+            --aside-hover: #8b8b8b;
+            --top-hover: #6f6f6f;
+            --titletop: #fff;
+        }
+        body{
+            background-color: var(--bg-color);
+            color: var(--bg-text);
+            display: flex
+        }
+
+        aside {
+            width: 16rem;
+            height: 100vh;
+            background-color: var(--aside-bg);
+            color: var(--aside-text);     
+            padding: 1.5rem;  
+            position: fixed;     
+            top: 0;  
+            left: 0;          
+        }
+
+        aside > * + * {
+            margin-top: 1rem;
+        }
+
+        h2{
+            color: var(--aside-text);
+        }
+
+        header{
+            background-color: var(--top);
+        }
+
+        h1{
+            color: var(--titletop);
+        }
+
+        div{
+            background-color: var(--bg-color);
+        }
+        p {
+            color: var(--note-text);
+        }
+        button{
+            color: var(--button-bg);
+        }
+        .sidebar{
+            display: block;
+            color: var(--aside-text);
+        }
+        .sidebar:hover{
+            color: var(--aside-hover);
+        }
+        .sidebut{
+            background-color: var(--aside-bg);
+            color: var(--aside-text);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        .sidebut:hover{
+            background-color: var(--top-hover);
+        }
+        
+
+    </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800 flex">
-
+<body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}"></body>
     <!-- Sidebar -->
-    <aside class="w-64 h-screen bg-purple-800 text-white p-6 space-y-4 fixed top-0 left-0">
+    <aside>
         <h2 class="text-2xl font-bold mb-6">Purple Note</h2>
         <nav class="space-y-4">
-            <a href="{{ url_for('feed') }}" class="block text-white hover:text-purple-300">🏠 Feed</a>
-            <a href="{{ url_for('serve_index') }}" class="block text-white hover:text-purple-300">📝 My Notes</a>
-            <a href="#" class="block text-white hover:text-purple-300">🔍 Explore</a>
-            <a href="#" class="block text-white hover:text-purple-300">👤 Profile</a>
-            <a href="{{ url_for('logout') }}" class="block text-white hover:text-purple-300">🚪 Logout</a>
+            <a href="{{ url_for('feed') }}" class="sidebar">🏠 Feed</a>
+            <a href="{{ url_for('serve_index') }}" class="sidebar">📝 My Notes</a>
+            <a href="#" class="sidebar">🔍 Explore</a>
+            <a href="#" class="sidebar">👤 Profile</a>
+            <a href="{{ url_for('homepage') }}" class="sidebar">🏡 HomePage</a>
+            <a href="{{ url_for('logout') }}" class="sidebar">🚪 Logout</a>
         </nav>
     </aside>
 
     <!-- Main Content -->
     <div class="ml-64 flex-1">
         <!-- Header -->
-        <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
-            <h1 class="text-xl font-bold text-purple-800">Shared Notes Feed</h1>
-            <a href="{{ url_for('serve_index') }}" class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-600">New Note</a>
+        <header class="shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+            <h1 class="text-xl font-bold">Shared Notes Feed</h1>
+            <a href="{{ url_for('serve_index') }}" class="sidebut">New Note</a>
         </header>
 
         <!-- Feed Section -->
         <main class="p-6 space-y-6">
             {% for note in notes %}
-            <div class="bg-white p-4 rounded shadow-md">
+            <div class="p-4 rounded shadow-md">
                 <div class="flex justify-between items-center mb-2">
                     <div>
                         <p class="font-semibold">{{ note.user.username if note.user else 'Unknown User' }}</p>
-                        <p class="text-sm text-gray-500">Note ID: {{ note.id }}</p>
+                        <p class="text-sm">Note ID: {{ note.id }}</p>
                     </div>
                 </div>
                 <h2 class="text-lg font-bold mb-2">{{ note.title }}</h2>
-                <p class="text-gray-700">{{ note.content }}</p>
+                <p>{{ note.content }}</p>
 
                 {% if note.image_filename %}
                 <img src="{{ url_for('static', filename='uploads/' + note.image_filename) }}" alt="Note Image"
@@ -49,7 +147,7 @@
                 {% endif %}
 
                 <div class="flex justify-end mt-4">
-                    <button class="text-purple-700 hover:underline">❤️ Like</button>
+                    <button class="hover:underline">❤️ Like</button>
                 </div>
             </div>
             {% endfor %}

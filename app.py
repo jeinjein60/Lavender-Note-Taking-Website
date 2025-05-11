@@ -21,6 +21,8 @@ class User(UserMixin, db.Model):
     tasks = db.relationship('Task', backref='user', lazy=True)
     notes = db.relationship('Note', backref='user', lazy=True)
     theme = db.Column(db.String(20), default="purple")
+    avatar_url = db.Column(db.Text, default="https://i.pravatar.cc/100")
+    bio = db.Column(db.Text, default="Creative coder & coffee-fueled note taker 🌿")
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -255,15 +257,10 @@ def delete_task():
     return jsonify({'error': 'Task not found'}), 404
 
 
-
-
-
-
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    # flash('Logged out.', 'info')
     return redirect(url_for('login'))
 
 @app.route('/api/notes', methods=['GET'])
@@ -307,7 +304,23 @@ def feed():
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html')
+    return render_template('profile.html', user=current_user)
+
+@app.route('/update_profile', methods=['POST'])
+@login_required
+def update_profile():
+    data = request.get_json()
+    avatar_url = data.get('avatar_url')
+    bio = data.get('bio')
+
+    if avatar_url:
+        current_user.avatar_url = avatar_url
+    if bio is not None:
+        current_user.bio = bio
+
+    db.session.commit()
+    return jsonify({'status': 'success'})
+
 
 @app.route('/explore')
 @login_required

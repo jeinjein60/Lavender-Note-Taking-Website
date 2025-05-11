@@ -499,34 +499,6 @@ function renameCategory(key, newLabel) {
 }
 
 
-
-// function deleteCategory(key) {
-//   if (!categories[key]) return;
-//   delete categories[key];
-//   initCategories();
-
-//   // Optional: POST deletion to backend
-//   fetch('/delete_category', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ label: key })
-//   });
-// }
-
-  // function renameCategory(key, newName) {
-  //   categories[key].label = newName;
-  //   initCategories();
-  // }
-
-  // function deleteCategory(key) {
-  //   if (confirm("Delete this category and all its tasks?")) {
-  //     delete categories[key];
-  //     initCategories();
-  //   }
-  // }
-
   function addTask() {
     const taskInput = document.getElementById('taskInput');
     const categorySelect = document.getElementById('categorySelect');

@@ -21,7 +21,7 @@
     <section class="bg-white p-6 rounded-xl shadow text-center">
       <!-- Avatar Upload -->
       <label for="avatarUpload" class="cursor-pointer inline-block">
-        <img id="avatarImage" src="https://i.pravatar.cc/100" alt="Avatar"
+        <img id="avatarImage" src="{{ user.avatar_url }}" alt="Avatar"
              class="mx-auto w-24 h-24 rounded-full shadow-md hover:opacity-80 transition">
         <input id="avatarUpload" type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(this)">
       </label>
@@ -35,7 +35,8 @@
       <!-- Bio Section -->
       <div class="mt-6 text-left">
         <h3 class="text-md font-semibold mb-1 text-purple-700">Bio</h3>
-        <textarea id="bioText" class="w-full p-3 border rounded-lg shadow-sm resize-none" rows="4" placeholder="Tell us about yourself...">Creative coder & coffee-fueled note taker 🌿</textarea>
+        <textarea id="bioText" class="..." rows="4" placeholder="Tell us about yourself...">{{ current_user.bio }}</textarea>
+
       </div>
 
       <!-- Action Buttons -->
@@ -48,46 +49,41 @@
   </main>
 
   <!-- JavaScript -->
-  <script>
-    function handleAvatarUpload(input) {
-      const file = input.files[0];
-      if (!file) return;
+<script>
+  function handleAvatarUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const imageUrl = e.target.result;
-        document.getElementById('avatarImage').src = imageUrl;
-        localStorage.setItem('userAvatar', imageUrl);
-      };
-      reader.readAsDataURL(file);
-    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imageUrl = e.target.result;
+      document.getElementById('avatarImage').src = imageUrl;
 
-    function saveBio() {
-      const bio = document.getElementById('bioText').value.trim();
-      alert("Bio saved: " + (bio || "Empty"));
-      localStorage.setItem('userBio', bio);
-    }
+      fetch("/update_profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatar_url: imageUrl })
+      });
+    };
+    reader.readAsDataURL(file);
+  }
 
-    function deleteAccount() {
-      const confirmDelete = confirm("Are you sure you want to delete your account? This cannot be undone.");
-      if (!confirmDelete) return;
+  function saveBio() {
+    const bio = document.getElementById('bioText').value.trim();
+    fetch("/update_profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bio })
+    }).then(() => {
+      alert("Bio saved.");
+    });
+  }
 
-      localStorage.removeItem('userAvatar');
-      localStorage.removeItem('userBio');
+  function deleteAccount() {
+    alert("Account deletion not yet implemented.");
+  }
+</script>
 
-      document.getElementById('avatarImage').src = "https://i.pravatar.cc/100";
-      document.getElementById('bioText').value = "";
-
-      alert("Your profile has been reset.");
-    }
-
-    window.onload = function () {
-      const savedAvatar = localStorage.getItem('userAvatar');
-      const savedBio = localStorage.getItem('userBio');
-      if (savedAvatar) document.getElementById('avatarImage').src = savedAvatar;
-      if (savedBio) document.getElementById('bioText').value = savedBio;
-    }
-  </script>
 </body>
 </html>
 

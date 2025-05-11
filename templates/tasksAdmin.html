@@ -152,6 +152,7 @@
       gap: 30px;
       max-width: 1200px;
       margin: auto;
+      padding: 20px
     }
 
     .note-card {
@@ -233,30 +234,24 @@
 
     {% if tasks_by_category %}
       {% for category, tasks in tasks_by_category.items() %}
-        <h2>{{ category }}</h2>
         <div class="note-grid">
-            {% for category, tasks in tasks_by_category.items() %}
-              <div class="note-card">
-                <div class="note-title">{{ category }}</div>
-          
-                {% for task in tasks %}
-                  <div class="note-description">{{ task.content }}</div>
-                  <div class="note-footer">
-                    <div class="note-meta">Created by @{{ task.user.username }}</div>
-                    <a href="{{ url_for('delete_task_admin', task_id=task.id) }}" class="delete-btn">Delete</a>
-                  </div>
-                {% endfor %}
+          {% for task in tasks %}
+            <div class="note-card">
+              <div class="note-title">{{ category }} </div>
+              <div class="note-description">{{ task.content }}</div>
+              <div class="note-footer">
+                <div class="note-meta">Created by @{{ task.user.username }}</div>
+                <a href="{{ url_for('delete_task_admin', task_id=task.id) }}" class="delete-btn">Delete</a>
               </div>
-            {% else %}
-              <p>No tasks available yet.</p>
-            {% endfor %}
-          </div>
+            </div>
+          {% endfor %}
+        </div>
       {% endfor %}
     {% else %}
       <p>No tasks published yet.</p>
     {% endif %}
-
   </div>
+
   <script>
     function setTheme(mode) {
       const root = document.documentElement;

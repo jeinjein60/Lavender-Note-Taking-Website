@@ -10,6 +10,9 @@ function popup() {
         <button onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
         <button onclick="formatText2('insertBulletPoint')"><i class="fa-solid fa-circle"></i></button>
         <button onclick="formatText('insertCheckbox')"><i class="fa-solid fa-square-check"></i></button>
+        <button onclick="triggerFileUpload('file')"><i class="fa-solid fa-paperclip"></i></button>
+        <button onclick="triggerFileUpload('image')"><i class="fa-solid fa-image"></i></button>
+        <button onclick="triggerFileUpload('video')"><i class="fa-solid fa-video"></i></button>
       </div>
       <div id="note-editor" contenteditable="true" placeholder="Enter your note..."></div>
       <div id="btn-container">
@@ -120,7 +123,6 @@ function displayNotes() {
             <button id="editBtn" onclick="editNote(${note.id})"><i class="fa-solid fa-pen"></i></button>
             <button id="deleteBtn" onclick="deleteNote(${note.id})"><i class="fa-solid fa-trash"></i></button>
             <button id="deleteBtn" onclick="shareNote(${note.id})"><i class="fa-solid fa-share-from-square"></i></button>
-
           </div>
         `;
         notesList.appendChild(listItem);
@@ -150,6 +152,9 @@ function editNote(noteId) {
             <button onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
             <button onclick="formatText2('insertBulletPoint')"><i class="fa-solid fa-circle"></i></button>
             <button onclick="formatText('insertCheckbox')"><i class="fa-solid fa-square-check"></i></button>
+            <button onclick="triggerFileUpload('file')"><i class="fa-solid fa-paperclip"></i></button>
+            <button onclick="triggerFileUpload('image')"><i class="fa-solid fa-image"></i></button>
+            <button onclick="triggerFileUpload('video')"><i class="fa-solid fa-video"></i></button>
           </div>
           <div id="note-editor" contenteditable="true">${noteToEdit.content}</div>
           <div id="btn-container">
@@ -221,6 +226,44 @@ function closeEditPopup() {
     editingPopup.remove();
   }
 }
+
+/* Upload */
+
+let currentFileType = '';
+
+function triggerFileUpload(type) {
+  currentFileType = type;
+  const fileInput = document.getElementById("fileUploader");
+  fileInput.accept = type === 'image' ? 'image/*' : type === 'video' ? 'video/*' : '*';
+  fileInput.click();
+}
+
+function handleFileUpload() {
+  const fileInput = document.getElementById("fileUploader");
+  const file = fileInput.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const editor = document.getElementById("note-editor");
+    let html = '';
+
+    if (currentFileType === 'image') {
+      html = `<img src="${e.target.result}" style="max-width:100%; border-radius:8px;" />`;
+    } else if (currentFileType === 'video') {
+      html = `<video controls style="max-width:100%; border-radius:8px;"><source src="${e.target.result}"></video>`;
+    } else {
+      html = `<a href="${e.target.result}" target="_blank">${file.name}</a>`;
+    }
+
+    editor.innerHTML += html + "<br/>";
+  };
+
+  reader.readAsDataURL(file);
+  fileInput.value = ''; // reset input
+}
+
 
 /* Initialize Notes Display */
 displayNotes();

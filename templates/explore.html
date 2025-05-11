@@ -10,14 +10,15 @@
         body.purple{
             --bg-color: #fdfdfd;
             --bg-text: #1f2937;
-            --aside-bg: #7021b6;
+            --aside-bg: #6b21a8;
             --aside-text: #fff;
             --top: #fff;
-            --button-bg: #6b21a8;
+            --button-bg: #7e22ce;
             --note-text: #374151;
             --aside-hover: #d8b4fe;
+            --button-hover: #6b21a8;
             --top-hover: #9b61ce;
-            --titletop: #7021b6;
+            --titletop: #6b21a8;
         }
         body.light{
             --bg-color: #fdfdfd;
@@ -26,6 +27,7 @@
             --aside-text: #000000;
             --top: #fff;
             --button-bg: #a3a3a3;
+            --button-hover: #b9b9b9;
             --note-text: #374151;
             --aside-hover: #424242;
             --top-hover: #747474;
@@ -38,6 +40,7 @@
             --aside-text: #fff;
             --top: #3b3b3b;
             --button-bg: #616161;
+            --button-hover: #434343;
             --note-text: #ffffff;
             --aside-hover: #8b8b8b;
             --top-hover: #6f6f6f;
@@ -82,8 +85,11 @@
         p {
             color: var(--note-text);
         }
-        button{
+        .button{
             color: var(--button-bg);
+        }
+        .button:hover{
+            background-color: var(--button-hover);
         }
         .sidebar{
             display: block;
@@ -101,25 +107,12 @@
         .sidebut:hover{
             background-color: var(--top-hover);
         }
-        .template-options {
-            display: flex;
-            gap: 20px;
-        }
-        .template-box {
-            background-color: var(--aside-bg);
-            padding: 40px 60px;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            color: var(--aside-text);
-            }
 
-        .template-box:hover {
-            background-color: var(--aside-hover);
+        .main-content {
+            margin-left: 16rem;
+            flex-grow: 1;
         }
-        
+
 
     </style>
 </head>
@@ -136,50 +129,29 @@
             <a href="{{ url_for('logout') }}" class="sidebar">🚪 Logout</a>
         </nav>
     </aside>
-    <div class="ml-64 flex-1">
-        <header class="shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
-            <h1 class="text-xl font-bold">Shared Notes Feed</h1>
-            <a href="{{ url_for('serve_index') }}" class="sidebut">New Note</a>
+    <div class="main-content">
+        <header>
+            <h1 class="text-xl font-bold text-purple-800">Explore Public Notes</h1>
+            <a href="{{ url_for('serve_index') }}" class="button">New Note</a>
         </header>
 
         <main class="p-6 space-y-6">
-            <!-- <a href="{{ url_for('set_theme', theme='light') }}" class="project">Light Mode</a>
-            <a href="{{ url_for('set_theme', theme='dark') }}" class="project">Dark Mode</a>
-            <a href="{{ url_for('set_theme', theme='purple') }}" class="project">Purple Mode</a> -->
-            <h1 class="text-xl font-bold">Welcome {{ current_user.username }}!</h1>
-            <div class="template-options">
-                <a href="{{ url_for('set_theme', theme='light') }}" style="text-decoration: none; color: inherit;">
-                    <div class="template-box">Light</div>
-                </a>
-                <a href="{{ url_for('set_theme', theme='dark') }}" style="text-decoration: none; color: inherit;">
-                    <div class="template-box">Dark</div>
-                </a>
-                <a href="{{ url_for('set_theme', theme='purple') }}" style="text-decoration: none; color: inherit;">
-                    <div class="template-box">Purple</div>
-                </a>
+            <div class="content-block">
+                <h2 class="text-lg font-bold mb-2">Welcome to the Explore Page!</h2>
+                <p class="text-gray-700">This is where you can discover notes shared by other users.</p>
+                <p class="text-gray-700 mt-2">
+                    (Content for public notes or trending topics would go here, e.g., fetched from a query.)
+                </p>
             </div>
-
+            {#
             {% for note in notes %}
-            <div class="p-4 rounded shadow-md">
-                <div class="flex justify-between items-center mb-2">
-                    <div>
-                        <p class="font-semibold">{{ note.user.username if note.user else 'Unknown User' }}</p>
-                        <p class="text-sm">Note ID: {{ note.id }}</p>
-                    </div>
-                </div>
+            <div class="bg-white p-4 rounded shadow-md">
                 <h2 class="text-lg font-bold mb-2">{{ note.title }}</h2>
-                <p>{{ note.content }}</p>
-
-                {% if note.image_filename %}
-                <img src="{{ url_for('static', filename='uploads/' + note.image_filename) }}" alt="Note Image"
-                    class="mt-4 rounded shadow" />
-                {% endif %}
-
-                <div class="flex justify-end mt-4">
-                    <button class="hover:underline">❤️ Like</button>
-                </div>
+                <p class="text-gray-700">{{ note.content }}</p>
+                <p class="text-sm text-gray-500">By: {{ note.user.username if note.user else 'Unknown User' }}</p>
             </div>
             {% endfor %}
+            #}
         </main>
     </div>
 

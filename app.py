@@ -69,6 +69,21 @@ def get_tasks():
     task_data = [{'content': t.content, 'category': t.category} for t in tasks]
     return jsonify(task_data)
 
+@app.route('/delete_category', methods=['POST'])
+@login_required
+def delete_category():
+    data = request.get_json()
+    category_key = data.get('category')
+
+    if category_key:
+        Task.query.filter_by(user_id=current_user.id, category=category_key).delete()
+        db.session.commit()
+        return jsonify({'status': 'success'})
+
+    return jsonify({'error': 'Category not found'}), 400
+
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -173,7 +188,7 @@ def login():
             if user.is_admin:
                 return redirect(url_for('admin_dashboard'))
             else:
-                return redirect(url_for('homepage'))
+                return redirect(url_for('feed'))
         # flash('Invalid credentials.', 'danger')
     return render_template('loginpage.html')
 
@@ -288,6 +303,17 @@ def delete_note(note_id):
 @login_required
 def feed():
     return render_template('feed.html')
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
+
+@app.route('/explore')
+@login_required
+def explore():
+    return render_template('explore.html')
+
 
 with app.app_context():
     db.create_all()

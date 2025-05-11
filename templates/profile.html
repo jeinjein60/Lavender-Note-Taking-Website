@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+  <!-- Header -->
+  <header class="flex items-center justify-between p-6 bg-purple-800 text-white shadow">
+    <h1 class="text-3xl font-bold">👤 Profile</h1>
+    <div class="flex space-x-3">
+      <a href="{{ url_for('feed') }}" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold">Back to Portal</a>
+      <a href="{{ url_for('logout') }}" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold">Log Out</a>
+    </div>
+  </header>
+
+  <!-- Main Profile Section -->
+  <main class="max-w-3xl mx-auto mt-10 px-6">
+    <section class="bg-white p-6 rounded-xl shadow text-center">
+      <!-- Avatar Upload -->
+      <label for="avatarUpload" class="cursor-pointer inline-block">
+        <img id="avatarImage" src="https://i.pravatar.cc/100" alt="Avatar"
+             class="mx-auto w-24 h-24 rounded-full shadow-md hover:opacity-80 transition">
+        <input id="avatarUpload" type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(this)">
+      </label>
+      <p class="text-sm text-gray-500 mt-2">Click image to upload new avatar</p>
+
+      <!-- Name and Username -->
+      <h2 class="text-xl font-semibold mt-4 text-purple-700">{{ current_user.username }}</h2>
+      <p class="text-sm text-gray-500">@{{ current_user.username }}</p>
+      <p class="mt-4 text-gray-700">Joined: May 2025</p>
+
+      <!-- Bio Section -->
+      <div class="mt-6 text-left">
+        <h3 class="text-md font-semibold mb-1 text-purple-700">Bio</h3>
+        <textarea id="bioText" class="w-full p-3 border rounded-lg shadow-sm resize-none" rows="4" placeholder="Tell us about yourself...">Creative coder & coffee-fueled note taker 🌿</textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-6 flex flex-wrap justify-center gap-4">
+        <button onclick="saveBio()" class="bg-purple-700 text-white px-5 py-2 rounded-lg hover:bg-purple-800">Save Changes</button>
+        <button class="bg-gray-200 text-gray-800 px-5 py-2 rounded-lg hover:bg-gray-300">Edit Profile</button>
+        <button onclick="deleteAccount()" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700">Delete Account</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- JavaScript -->
+  <script>
+    function handleAvatarUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imageUrl = e.target.result;
+        document.getElementById('avatarImage').src = imageUrl;
+        localStorage.setItem('userAvatar', imageUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveBio() {
+      const bio = document.getElementById('bioText').value.trim();
+      alert("Bio saved: " + (bio || "Empty"));
+      localStorage.setItem('userBio', bio);
+    }
+
+    function deleteAccount() {
+      const confirmDelete = confirm("Are you sure you want to delete your account? This cannot be undone.");
+      if (!confirmDelete) return;
+
+      localStorage.removeItem('userAvatar');
+      localStorage.removeItem('userBio');
+
+      document.getElementById('avatarImage').src = "https://i.pravatar.cc/100";
+      document.getElementById('bioText').value = "";
+
+      alert("Your profile has been reset.");
+    }
+
+    window.onload = function () {
+      const savedAvatar = localStorage.getItem('userAvatar');
+      const savedBio = localStorage.getItem('userBio');
+      if (savedAvatar) document.getElementById('avatarImage').src = savedAvatar;
+      if (savedBio) document.getElementById('bioText').value = savedBio;
+    }
+  </script>
+</body>
+</html>
+

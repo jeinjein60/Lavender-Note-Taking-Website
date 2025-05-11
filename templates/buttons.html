@@ -310,8 +310,8 @@
   <header class="header">
     <h1 class="logo">Purple Note</h1>
     <div class="nav-links">
-      <a href="{{ url_for('feed') }}" class="nav-button">Share</a>
-      <a href="{{ url_for('homepage') }}" class="nav-button">Home</a>
+      <a href="{{ url_for('feed') }}" class="nav-button">Feed</a>
+      <!-- <a href="{{ url_for('homepage') }}" class="nav-button">Home</a> -->
       <a href="{{ url_for('logout') }}" class="nav-button">Logout</a>
     </div>
   </header>
@@ -424,34 +424,108 @@
     });
   }
 
+  // function addCategory() {
+  //   const input = document.getElementById('newCategoryName');
+  //   const name = input.value.trim();
+  //   if (name === "") return;
+
+  //   const key = generateIdFromLabel(name);
+  //   const listId = key + "List";
+
+  //   if (!categories[key]) {
+  //     categories[key] = { label: name, listId: listId };
+  //     input.value = "";
+  //     initCategories();
+  //   } else {
+  //     alert("This category already exists.");
+  //   }
+  // }
+
   function addCategory() {
-    const input = document.getElementById('newCategoryName');
-    const name = input.value.trim();
-    if (name === "") return;
+    const input = document.getElementById("newCategoryName");
+    const label = input.value.trim();
+    if (!label) return;
 
-    const key = generateIdFromLabel(name);
-    const listId = key + "List";
-
+    const key = generateIdFromLabel(label);
     if (!categories[key]) {
-      categories[key] = { label: name, listId: listId };
+      categories[key] = {
+        label: label,
+        listId: key + "List"
+      };
+      initCategories();
       input.value = "";
-      initCategories();
-    } else {
-      alert("This category already exists.");
+
+      // Optional: Save category to backend
+      fetch('/add_category', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ label: label })
+      });
     }
   }
 
-  function renameCategory(key, newName) {
-    categories[key].label = newName;
-    initCategories();
+function renameCategory(key, newLabel) {
+  if (!categories[key]) return;
+  const newKey = generateIdFromLabel(newLabel);
+  if (newKey !== key && categories[newKey]) {
+    alert("Duplicate category name.");
+    return;
   }
 
-  function deleteCategory(key) {
-    if (confirm("Delete this category and all its tasks?")) {
-      delete categories[key];
-      initCategories();
-    }
-  }
+  const oldCategory = categories[key];
+  const tasks = document.getElementById(oldCategory.listId).innerHTML;
+
+  delete categories[key];
+  categories[newKey] = {
+    label: newLabel,
+    listId: newKey + "List"
+  };
+  initCategories();
+
+  // Move tasks to new list
+  const newList = document.getElementById(categories[newKey].listId);
+  newList.innerHTML = tasks;
+
+  // Optional: POST update to backend
+  fetch('/rename_category', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ old: oldCategory.label, new: newLabel })
+  });
+}
+
+
+
+// function deleteCategory(key) {
+//   if (!categories[key]) return;
+//   delete categories[key];
+//   initCategories();
+
+//   // Optional: POST deletion to backend
+//   fetch('/delete_category', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({ label: key })
+//   });
+// }
+
+  // function renameCategory(key, newName) {
+  //   categories[key].label = newName;
+  //   initCategories();
+  // }
+
+  // function deleteCategory(key) {
+  //   if (confirm("Delete this category and all its tasks?")) {
+  //     delete categories[key];
+  //     initCategories();
+  //   }
+  // }
 
   function addTask() {
     const taskInput = document.getElementById('taskInput');

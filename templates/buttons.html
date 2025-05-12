@@ -345,41 +345,58 @@
   }
 
   function initCategories() {
-    const select = document.getElementById('categorySelect');
-    const editor = document.getElementById('categoryEditor');
-    const lists = document.getElementById('listsContainer');
+  const select = document.getElementById('categorySelect');
+  const editor = document.getElementById('categoryEditor');
+  const lists = document.getElementById('listsContainer');
 
-    select.innerHTML = '';
-    editor.innerHTML = '';
-    lists.innerHTML = '';
-
-    for (const key in categories) {
-      const category = categories[key];
-
-      const option = document.createElement('option');
-      option.value = key;
-      option.textContent = category.label;
-      select.appendChild(option);
-
-      const container = document.createElement('div');
-      container.className = "flex items-center gap-2";
-      container.innerHTML = `
-        <input type="text" value="${category.label}" 
-          class="category-edit-input" 
-          onchange="renameCategory('${key}', this.value)" />
-        <button onclick="deleteCategory('${key}')" class="text-red-600">🗑️</button>`;
-      editor.appendChild(container);
-
-      const section = document.createElement('div');
-      section.className = "task-list-container";
-      section.innerHTML = 
-        `<h2 class="list-title">${category.label}</h2>
-        <ul id="${category.listId}" class="task-list"></ul>`;
-      lists.appendChild(section);
-
-      makeListDraggable(category.listId);
+  
+  const savedTasks = {};
+  for (const key in categories) {
+    const listId = categories[key].listId;
+    const existingList = document.getElementById(listId);
+    if (existingList) {
+      savedTasks[listId] = existingList.innerHTML;
     }
   }
+
+ 
+  select.innerHTML = '';
+  editor.innerHTML = '';
+  lists.innerHTML = '';
+
+
+  for (const key in categories) {
+    const category = categories[key];
+
+    // Dropdown
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = category.label;
+    select.appendChild(option);
+
+    // Editor
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <input type="text" value="${category.label}" 
+        class="px-3 py-1 border rounded shadow-sm w-64" 
+        onchange="renameCategory('${key}', this.value)" />
+      <button onclick="deleteCategory('${key}')" class="text-red-600 ml-2">🗑️</button>
+    `;
+    editor.appendChild(li);
+
+    // Section
+    const section = document.createElement('div');
+    section.className = "bg-white p-6 rounded-xl shadow";
+    section.innerHTML = `
+      <h2 class="text-xl font-semibold text-purple-700 mb-4">${category.label}</h2>
+      <ul id="${category.listId}" class="list-disc list-inside space-y-2 text-gray-700">
+        ${savedTasks[category.listId] || ''}
+      </ul>
+    `;
+    lists.appendChild(section);
+  }
+}
+
 
   function loadTasksFromServer() {
     fetch("/get_tasks")

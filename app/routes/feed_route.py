@@ -16,6 +16,12 @@ def feed():
 def explore():
     search_query = request.args.get('query')
     notes = [] # Initialize notes as an empty list
+    topic = request.args.get('topic')
+    query = Note.query.filter_by(is_public=True)
+
+    if topic:
+        query = query.filter(Note.topic == topic)
+        notes = query.order_by(Note.id.desc()).all()
 
     if search_query:
         # Perform a case-insensitive search on note title and content

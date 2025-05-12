@@ -107,4 +107,14 @@ def vote_note(note_id):
         db.session.add(vote)
 
     db.session.commit()
-    return jsonify({'message': 'vote updated'})
+
+    # Count votes after update
+    upvotes = Vote.query.filter_by(note_id=note_id, vote_type='up').count()
+    downvotes = Vote.query.filter_by(note_id=note_id, vote_type='down').count()
+
+    return jsonify({
+        'message': 'vote updated',
+        'upvotes': upvotes,
+        'downvotes': downvotes,
+        'vote_count': upvotes - downvotes
+    })

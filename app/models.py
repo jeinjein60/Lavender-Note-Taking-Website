@@ -14,9 +14,18 @@ class Note(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     image_filename = db.Column(db.String(300))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow) 
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.relationship('User', backref=db.backref('note', lazy=True))
-    is_public = db.Column(db.Boolean, default=False) 
+    is_public = db.Column(db.Boolean, default=False)
+
+    @property
+    def upvote_count(self):
+        return Vote.query.filter_by(note_id=self.id, vote_type='up').count()
+
+    @property
+    def downvote_count(self):
+        return Vote.query.filter_by(note_id=self.id, vote_type='down').count()
+
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,6 +38,6 @@ class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     note_id = db.Column(db.Integer, db.ForeignKey('note.id'), nullable=False)
-    vote_type = db.Column(db.String(10), nullable=False)  # 'up' or 'down'
+    vote_type = db.Column(db.String(10), nullable=False)  
 
     __table_args__ = (db.UniqueConstraint('user_id', 'note_id', name='unique_vote'),)

@@ -76,8 +76,9 @@
 
                 <div class="vote-buttons" data-note-id="{{ note.id }}">
                     <button class="upvote">⬆️</button>
-                    <span class="vote-count" id="vote-count-{{ note.id }}">{{ note.vote_count }}</span>
+                    <span id="upvote-count-{{ note.id }}">{{ note.upvote_count }}</span>
                     <button class="downvote">⬇️</button>
+                    <span id="downvote-count-{{ note.id }}">{{ note.downvote_count }}</span>
                 </div>
             </div>
             {% endfor %}
@@ -89,7 +90,9 @@
             const noteId = group.dataset.noteId;
             const up = group.querySelector('.upvote');
             const down = group.querySelector('.downvote');
-            const countSpan = document.getElementById(`vote-count-${noteId}`);
+
+            const upCount = document.getElementById(`upvote-count-${noteId}`);
+            const downCount = document.getElementById(`downvote-count-${noteId}`);
 
             function sendVote(voteType) {
                 fetch(`/api/notes/${noteId}/vote`, {
@@ -99,7 +102,8 @@
                 })
                     .then(res => res.json())
                     .then(data => {
-                        countSpan.textContent = data.vote_count;
+                        upCount.textContent = data.upvotes;
+                        downCount.textContent = data.downvotes;
                     });
             }
 
@@ -107,6 +111,7 @@
             down.addEventListener('click', () => sendVote('down'));
         });
     </script>
+
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
+from flask import Flask, render_template, request, redirect, url_for, jsonify, abort, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -221,31 +221,23 @@ def admin_pages():
 
 @app.route('/admin/images')
 @login_required
+@admin_required
 def admin_images():
-    if not current_user.is_admin:
-        flash("Unauthorized")
-        return redirect(url_for('index'))
-    
-    media = Media.query.order_by(Media.upload_time.desc()).all()
-    return render_template('imagesAdmin.html', media=media)
+    uploads = Upload.query.all()
+    return render_template('imagesAdmin.html', uploads=uploads)
 
 
-@app.route('/admin/images/delete/<int:media_id>')
+@app.route('/admin/images/delete/<int:upload_id>', methods=['GET', 'POST'])
+@admin_required
 @login_required
-def delete_media(media_id):
-    if not current_user.is_admin:
-        flash("Unauthorized")
-        return redirect(url_for('index'))
-
-    media = Media.query.get_or_404(media_id)
-    try:
-        os.remove(media.filepath)  # Remove the file from storage
-    except:
-        pass  # Ignore if file missing
-
-    db.session.delete(media)
-    db.session.commit()
-    flash('Media deleted.')
+def delete_upload(upload_id):
+    upload = Upload.query.get(upload_id)
+    if upload:
+        db.session.delete(upload)
+        db.session.commit()
+        flash('Upload deleted successfully.', 'info')
+    else:
+        flash('Upload not found.', 'error')
     return redirect(url_for('admin_images'))
 
 @app.route('/admin/pages/delete/<int:note_id>')

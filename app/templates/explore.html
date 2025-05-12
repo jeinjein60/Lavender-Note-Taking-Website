@@ -6,144 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Explore Notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        /* You might want to consolidate common styles into a base.html template later */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f4f6;
-            /* bg-gray-100 */
-            color: #374151;
-            /* text-gray-800 */
-        }
-
-        aside {
-            /* Sidebar styles */
-            width: 16rem;
-            height: 100vh;
-            background-color: #6b21a8;
-            /* bg-purple-800 */
-            color: white;
-            padding: 1.5rem;
-            space-y: 1rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
-
-        aside h2 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-        }
-
-        aside a {
-            display: block;
-            color: white;
-            padding: 0.5rem 0;
-        }
-
-        aside a:hover {
-            color: #d8b4fe;
-            /* hover:text-purple-300 */
-        }
-
-        .main-content {
-            /* Main content area */
-            margin-left: 16rem;
-            flex-grow: 1;
-        }
-
-        header {
-            /* Header styles */
-            background-color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        header h1 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #6b21a8;
-        }
-
-        .button {
-            /* Button styles */
-            background-color: #7e22ce;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-        }
-
-        .button:hover {
-            background-color: #6b21a8;
-        }
-
-        main {
-            padding: 1.5rem;
-            space-y: 1.5rem;
-        }
-
-        .content-block {
-            /* Content block styles */
+        .note {
             background-color: white;
             padding: 1.5rem;
             border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .vote-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .vote-buttons button {
+            background-color: #ede9fe;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        .vote-buttons button:hover {
+            background-color: #d8b4fe;
+        }
+
+        .vote-count {
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body class="bg-gray-100 text-gray-800 flex">
-
-    <aside class="w-64 h-screen bg-purple-800 text-white p-6 space-y-4 fixed top-0 left-0">
+    <aside class="w-64 h-screen bg-purple-800 text-white p-6 fixed top-0 left-0">
         <h2 class="text-2xl font-bold mb-6">Purple Note</h2>
         <nav class="space-y-4">
-            <a href="{{ url_for('main.feed') }}" class="block text-white hover:text-purple-300">🏠 Feed</a>
-            <a href="{{ url_for('note.serve_index') }}" class="block text-white hover:text-purple-300">📝 My Notes</a>
-            <a href="{{ url_for('main.explore') }}" class="block text-white hover:text-purple-300">🔍 Explore</a>
-            <a href="#" class="block text-white hover:text-purple-300">🤖 Task Manager</a>
-            <a href="{{ url_for('main.profile') }}" class="block text-white hover:text-purple-300">👤 Profile</a>
-            <a href="{{ url_for('auth.logout') }}" class="block text-white hover:text-purple-300">🚪 Logout</a>
+            <a href="/feed" class="block hover:text-purple-300">🏠 Feed</a>
+            <a href="/serve_index" class="block hover:text-purple-300">📝 My Notes</a>
+            <a href="/explore" class="block hover:text-purple-300">🔍 Explore</a>
+            <a href="#">🤖 Task Manager</a>
+            <a href="#" class="block hover:text-purple-300">👤 Profile</a>
+            <a href="/logout" class="block hover:text-purple-300">🚪 Logout</a>
         </nav>
     </aside>
 
-    <div class="main-content">
-        <header>
-            <h1 class="text-xl font-bold text-purple-800">Explore Public Notes</h1>
-            <a href="{{ url_for('note.serve_index') }}" class="button">New Note</a>
+    <div class="ml-64 flex-1">
+        <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+            <h1 class="text-xl font-bold text-purple-800">Explore Notes</h1>
+            <form method="get" action="/explore" class="flex gap-2 items-center">
+                <input type="text" name="topic" placeholder="Filter by topic..."
+                    class="px-3 py-2 border border-gray-300 rounded" />
+                <button type="submit"
+                    class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-600">Filter</button>
+            </form>
         </header>
 
         <main class="p-6 space-y-6">
-            <div class="content-block">
-                <h2 class="text-lg font-bold mb-2">Welcome to the Explore Page!</h2>
-                <p class="text-gray-700">This is where you can discover notes shared by other users.</p>
-                <p class="text-gray-700 mt-2">
-                    (Content for public notes or trending topics would go here, e.g., fetched from a query.)
-                </p>
-            </div>
-            {#
             {% for note in notes %}
-            <div class="bg-white p-4 rounded shadow-md">
-                <h2 class="text-lg font-bold mb-2">{{ note.title }}</h2>
-                <p class="text-gray-700">{{ note.content }}</p>
-                <p class="text-sm text-gray-500">By: {{ note.user.username if note.user else 'Unknown User' }}</p>
-            </div>
-            {% endfor %}
-            #}
-            {% for note in notes %}
-            <div class="note">
-                <h3>{{ note.title }}</h3>
+            <div class="note" id="note-{{ note.id }}">
+                <h3 class="text-lg font-semibold">{{ note.title }}</h3>
                 <p>{{ note.content }}</p>
+                <p class="text-sm text-gray-500">Topic: {{ note.topic }} | By: {{ note.user.username if note.user else
+                    'Unknown
+                    User' }}</p>
 
                 <div class="vote-buttons" data-note-id="{{ note.id }}">
                     <button class="upvote">⬆️</button>
-                    <span class="vote-count">{{ note.vote_count }}</span>
+                    <span class="vote-count" id="vote-count-{{ note.id }}">{{ note.vote_count }}</span>
                     <button class="downvote">⬇️</button>
                 </div>
             </div>
@@ -156,21 +89,24 @@
             const noteId = group.dataset.noteId;
             const up = group.querySelector('.upvote');
             const down = group.querySelector('.downvote');
-            const count = group.querySelector('.vote-count');
+            const countSpan = document.getElementById(`vote-count-${noteId}`);
 
-            up.onclick = () => sendVote(noteId, 'up');
-            down.onclick = () => sendVote(noteId, 'down');
-
-            function sendVote(noteId, voteType) {
+            function sendVote(voteType) {
                 fetch(`/api/notes/${noteId}/vote`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ vote_type: voteType })
-                }).then(() => location.reload());
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        countSpan.textContent = data.vote_count;
+                    });
             }
+
+            up.addEventListener('click', () => sendVote('up'));
+            down.addEventListener('click', () => sendVote('down'));
         });
     </script>
-
 </body>
 
 </html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Media</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      background-color: #f4f4f9;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 200px;
+      right: 0;
+      height: 60px;
+      background-color: #6b46c1;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      z-index: 10;
+    }
+
+    .navbar .brand {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .sidebar {
+      width: 200px;
+      background-color: #2d2d2d;
+      color: white;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      padding-top: 60px;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      border-bottom: 1px solid #444;
+    }
+
+    .sidebar ul li a {
+      display: block;
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background-color: #6b46c1;
+    }
+
+    .main {
+      margin-left: 200px;
+      margin-top: 60px;
+      padding: 2rem;
+      flex: 1;
+    }
+
+    form {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    form input[type="file"],
+    form input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    form button {
+      padding: 0.6rem 1.2rem;
+      background-color: #6b46c1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #553c9a;
+    }
+
+    #preview-container {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .preview-item {
+      text-align: center;
+    }
+
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .note-card {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .note-footer {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: #555;
+    }
+
+    video, img {
+      border-radius: 4px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+  </style>
+</head>
+<body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}">
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <span class="brand">Admin Homepage</span>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <ul>
+      <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('admin_users') }}">Users</a></li>
+      <li><a href="{{ url_for('admin_pages') }}">Pages</a></li>
+      <li><a href="{{ url_for('admin_tasks') }}">Tasks</a></li>
+      <li><a href="{{ url_for('upload_file') }}" class="active">Media</a></li>
+      <li><a href="{{ url_for('set_theme', theme='light') }}">Light Mode</a></li>
+      <li><a href="{{ url_for('set_theme', theme='dark') }}">Dark Mode</a></li>
+      <li><a href="{{ url_for('set_theme', theme='purple') }}">Purple Mode</a></li>
+      <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <h1>Upload Picture or Video</h1>
+
+    <form id="media-upload-form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+      <input id="media-file" type="file" name="file" accept="image/*,video/*" required><br>
+      <input id="media-title" type="text" name="category" placeholder="Category (optional)"><br>
+      <button type="submit">Upload</button>
+    </form>
+
+    <div id="preview-container"></div>
+
+    <hr>
+
+    <h1>Uploaded Files</h1>
+
+    {% if uploads_by_category %}
+      {% for category, uploads in uploads_by_category.items() %}
+        <h2>{{ category }}</h2>
+        <div class="note-grid">
+          {% for u in uploads %}
+            <div class="note-card">
+              {% if u.filetype == 'image' %}
+                <img src="{{ url_for('static', filename='uploads/' ~ u.filename) }}" width="200">
+              {% else %}
+                <video width="200" controls>
+                  <source src="{{ url_for('static', filename='uploads/' ~ u.filename) }}">
+                </video>
+              {% endif %}
+              <div class="note-footer">
+                Uploaded by @{{ u.user.username }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No uploads yet.</p>
+    {% endif %}
+  </div>
+
+  <script>
+    const mediaFileInput = document.getElementById('media-file');
+    const previewContainer = document.getElementById('preview-container');
+
+    mediaFileInput.addEventListener('change', () => {
+      previewContainer.innerHTML = ''; // Clear old preview
+
+      const mediaFile = mediaFileInput.files[0];
+      const mediaTitle = document.getElementById('media-title').value || 'Untitled';
+
+      if (!mediaFile) return;
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const mediaType = mediaFile.type.startsWith('image/') ? 'image' : 'video';
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+
+        let mediaElement;
+        if (mediaType === 'image') {
+          mediaElement = document.createElement('img');
+          mediaElement.src = e.target.result;
+          mediaElement.className = 'w-32 h-32 object-cover rounded';
+        } else {
+          mediaElement = document.createElement('video');
+          mediaElement.src = e.target.result;
+          mediaElement.controls = true;
+          mediaElement.className = 'w-32 h-32 object-cover rounded';
+        }
+
+        previewItem.appendChild(mediaElement);
+        const caption = document.createElement('p');
+        caption.textContent = mediaTitle;
+        previewItem.appendChild(caption);
+
+        previewContainer.appendChild(previewItem);
+      };
+
+      reader.readAsDataURL(mediaFile);
+    });
+  </script>
+
+</body>
+</html>

@@ -113,10 +113,10 @@ def upload_file():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            
+
             user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id))
             os.makedirs(user_folder, exist_ok=True)
-            
+
             filepath = os.path.join(user_folder, filename)
             file.save(filepath)
 

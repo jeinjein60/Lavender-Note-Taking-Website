@@ -5,45 +5,198 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body.purple{
+      --bg-color: #e9d6f6;
+      --header-bg: #6b21a8;
+      --header-text: #fff;
+      --section-bg: #efe3f7;
+      --h-text: #7e22ce;
+      --topbuttons-bg: #fff;
+      --topbuttons-text: #6b21a8;
+      --topbuttons-hover: #f3e8ff;
+      --p12-text: #6b7280;
+      --p3-text: #374151;
+      --save-bg: #7e22ce;
+      --save-text: #fff;
+      --save-hover: #6b21a8;
+      --edit-bg: #e5e7eb;
+      --edit-text: #1f2937;
+      --edit-hover: #d1d5db;
+      --delete-bg: #dc2626;
+      --delete-text: #fff;
+      --delete-hover: #b91c1c;
+      --bio-border: #d1d5db;
+    }
+    body.light{
+      --bg-color: #f7fafc;
+      --header-bg: #efefef;
+      --header-text: #000000;
+      --section-bg: #f5f5f5;
+      --h-text: #010101;
+      --topbuttons-bg: #fff;
+      --topbuttons-text: #000000;
+      --topbuttons-hover: #bebebe;
+      --p12-text: #282828;
+      --p3-text: #393939;
+      --save-bg: #c9c9c9;
+      --save-text: #000000;
+      --save-hover: #a7a7a7;
+      --edit-bg: #e5e7eb;
+      --edit-text: #1f2937;
+      --edit-hover: #d1d5db;
+      --delete-bg: #ff7575;
+      --delete-text: #000000;
+      --delete-hover: #b86e6e;
+      --bio-border: #d1d5db;
+    }
+    body.dark{
+      --bg-color: #2a2a2a;
+      --header-bg: #1d1d1d;
+      --header-text: #ffffff;
+      --section-bg: #3c3c3c;
+      --h-text: #ffffff;
+      --topbuttons-bg: #383838;
+      --topbuttons-text: #ffffff;
+      --topbuttons-hover: #2a2a2a;
+      --p12-text: #e1e1e1;
+      --p3-text: #9d9d9d;
+      --save-bg: #4b4b4b;
+      --save-text: #fff;
+      --save-hover: #3b3b3b;
+      --edit-bg: #354057;
+      --edit-text: #ffffff;
+      --edit-hover: #232425;
+      --delete-bg: #330909;
+      --delete-text: #fff;
+      --delete-hover: #400a0a;
+      --bio-border: #ffffff;
+    }
+    body{
+      background-color: var(--bg-color)
+    }
+    header{
+      background-color: var(--header-bg);
+      color: var(--header-text);
+    }
+
+    section{
+      background-color: var(--section-bg);
+    }
+
+    h2{
+      color: var(--h-text);
+    }
+    h3{
+      color: var(--h-text);
+    }
+    .topbuttons{
+      background-color: var(--topbuttons-bg);
+      color: var(--topbuttons-text);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .topbuttons:hover{
+      background-color: var(--topbuttons-hover);
+    }
+    .p1{
+      font-size: 0.875rem;
+      color: var(--p12-text);
+      margin-top: 0.5rem;
+    }
+    .p2{
+      color: var(--p12-text);
+      font-size: 0.875rem;
+    }
+    .p3{
+      margin-top: 1rem;
+      color: var(--p3-text);
+    }
+    .save{
+      background-color: var(--save-bg);
+      color: var(--save-text);
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-radius: 6px;  
+    }
+    .save:hover{
+      background-color: var(--save-hover);
+    }
+    .edit{
+      background-color: var(--edit-bg);
+      color: var(--edit-text);
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-radius: 6px;
+    }
+    .edit:hover{
+      background-color: var(--edit-hover);
+    }
+
+    .delete{
+      background-color: var(--delete-bg);
+      color: var(--delete-text);
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-radius: 6px;    
+    }
+    .delete:hover{
+      background-color: var(--delete-hover);
+    }
+    .bio{
+      width: 100%;
+      padding: 0.5rem;
+      border-width: 1px;
+      border-color: var(--bio-border);
+      border-radius: 0.5rem;
+      background-color: var(--section-bg);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen font-sans">
+<body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}"></body>
   <!-- Header -->
-  <header class="flex items-center justify-between p-6 bg-purple-800 text-white shadow">
+  <header class="flex items-center justify-between p-6 shadow">
     <h1 class="text-3xl font-bold">👤 Profile</h1>
     <div class="flex space-x-3">
-      <a href="{{ url_for('feed') }}" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold">Back to Portal</a>
-      <a href="{{ url_for('logout') }}" class="bg-white text-purple-800 px-4 py-2 rounded hover:bg-purple-100 font-semibold">Log Out</a>
+      <a href="{{ url_for('feed') }}" class="topbuttons">Back to Portal</a>
+      <a href="{{ url_for('logout') }}" class="topbuttons">Log Out</a>
     </div>
   </header>
 
   <!-- Main Profile Section -->
   <main class="max-w-3xl mx-auto mt-10 px-6">
-    <section class="bg-white p-6 rounded-xl shadow text-center">
+    <section class="p-6 rounded-xl shadow text-center">
       <!-- Avatar Upload -->
       <label for="avatarUpload" class="cursor-pointer inline-block">
         <img id="avatarImage" src="{{ user.avatar_url }}" alt="Avatar"
              class="mx-auto w-24 h-24 rounded-full shadow-md hover:opacity-80 transition">
         <input id="avatarUpload" type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(this)">
       </label>
-      <p class="text-sm text-gray-500 mt-2">Click image to upload new avatar</p>
+      <p class="p1">Click image to upload new avatar</p>
 
       <!-- Name and Username -->
-      <h2 class="text-xl font-semibold mt-4 text-purple-700">{{ current_user.username }}</h2>
-      <p class="text-sm text-gray-500">@{{ current_user.username }}</p>
-      <p class="mt-4 text-gray-700">Joined: May 2025</p>
+      <h2 class="text-xl font-semibold mt-4">{{ current_user.username }}</h2>
+      <p class="p2">@{{ current_user.username }}</p>
+      <p class="p3">Joined: May 2025</p>
 
       <!-- Bio Section -->
       <div class="mt-6 text-left">
-        <h3 class="text-md font-semibold mb-1 text-purple-700">Bio</h3>
-        <textarea id="bioText" class="..." rows="4" placeholder="Tell us about yourself...">{{ current_user.bio }}</textarea>
-
+        <h3 class="text-md font-semibold mb-1">Bio</h3>
+        <textarea id="bioText" class="bio" rows="4" placeholder="Tell us about yourself...">{{ current_user.bio }}</textarea>
       </div>
 
       <!-- Action Buttons -->
       <div class="mt-6 flex flex-wrap justify-center gap-4">
-        <button onclick="saveBio()" class="bg-purple-700 text-white px-5 py-2 rounded-lg hover:bg-purple-800">Save Changes</button>
-        <button class="bg-gray-200 text-gray-800 px-5 py-2 rounded-lg hover:bg-gray-300">Edit Profile</button>
-        <button onclick="deleteAccount()" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700">Delete Account</button>
+        <button onclick="saveBio()" class="save">Save Changes</button>
+        <button class="edit">Edit Profile</button>
+        <button onclick="deleteAccount()" class="delete">Delete Account</button>
       </div>
     </section>
   </main>

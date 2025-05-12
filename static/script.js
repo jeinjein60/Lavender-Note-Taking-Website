@@ -251,6 +251,5 @@ function renderNote(note) {
 
 
 
-
 /* Initialize Notes Display */
 displayNotes();

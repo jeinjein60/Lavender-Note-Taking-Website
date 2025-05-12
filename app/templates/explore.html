@@ -136,8 +136,40 @@
             </div>
             {% endfor %}
             #}
+            {% for note in notes %}
+            <div class="note">
+                <h3>{{ note.title }}</h3>
+                <p>{{ note.content }}</p>
+
+                <div class="vote-buttons" data-note-id="{{ note.id }}">
+                    <button class="upvote">⬆️</button>
+                    <span class="vote-count">{{ note.vote_count }}</span>
+                    <button class="downvote">⬇️</button>
+                </div>
+            </div>
+            {% endfor %}
         </main>
     </div>
+
+    <script>
+        document.querySelectorAll('.vote-buttons').forEach(group => {
+            const noteId = group.dataset.noteId;
+            const up = group.querySelector('.upvote');
+            const down = group.querySelector('.downvote');
+            const count = group.querySelector('.vote-count');
+
+            up.onclick = () => sendVote(noteId, 'up');
+            down.onclick = () => sendVote(noteId, 'down');
+
+            function sendVote(noteId, voteType) {
+                fetch(`/api/notes/${noteId}/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vote_type: voteType })
+                }).then(() => location.reload());
+            }
+        });
+    </script>
 
 </body>
 

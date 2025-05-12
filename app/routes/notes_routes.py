@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 from app import db
 from app.models import Note
+from app.models import Vote
 from config import Config
 
 note_bp = Blueprint('note', __name__)
@@ -32,6 +33,7 @@ def get_notes():
 def create_note():
     title = request.form.get('title')
     content = request.form.get('content')
+    is_public = True if request.form.get('is_public') == 'on' else False
     image = request.files.get('image')
     image_filename = None
 
@@ -40,6 +42,13 @@ def create_note():
         image.save(os.path.join(Config.UPLOAD_FOLDER, filename))
         image_filename = filename
 
+    note = Note(
+        title=title,
+        content=content,
+        user_id=current_user.id,
+        image_filename=image_filename,
+        is_public=is_public 
+    )
     note = Note(title=title, content=content, user_id=current_user.id, image_filename=image_filename)
     db.session.add(note)
     db.session.commit()
@@ -75,3 +84,27 @@ def get_public_notes():
         {'title': n.title, 'content': n.content, 'user_id': n.user_id}
         for n in notes
     ])
+
+@property
+def vote_count(self):
+    up = Vote.query.filter_by(note_id=self.id, vote_type='up').count()
+    down = Vote.query.filter_by(note_id=self.id, vote_type='down').count()
+    return up - down
+
+@note_bp.route('/api/notes/<int:note_id>/vote', methods=['POST'])
+@login_required
+def vote_note(note_id):
+    vote_type = request.json.get('vote_type')  # "up" or "down"
+    existing_vote = Vote.query.filter_by(user_id=current_user.id, note_id=note_id).first()
+
+    if existing_vote:
+        if existing_vote.vote_type == vote_type:
+            db.session.delete(existing_vote)  # Toggle vote off
+        else:
+            existing_vote.vote_type = vote_type  # Change vote
+    else:
+        vote = Vote(user_id=current_user.id, note_id=note_id, vote_type=vote_type)
+        db.session.add(vote)
+
+    db.session.commit()
+    return jsonify({'message': 'vote updated'})

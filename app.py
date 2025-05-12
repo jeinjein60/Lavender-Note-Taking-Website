@@ -407,13 +407,12 @@ def create_note():
         topic = request.form['topic']
         is_public = 'is_public' in request.form
 
-        # Assuming you have a Note model with title, content, topic, and is_public fields
         new_note = Note(title=title, content=content, topic=topic, is_public=is_public, user_id=current_user.id)
 
         db.session.add(new_note)
         db.session.commit()
         
-        return redirect(url_for('index.html'))  # or wherever you want to redirect after note creation
+        return redirect(url_for('serve_index'))
     
     notes = Note.query.filter_by(user_id=current_user.id).all()
     return render_template('index.html', notes=notes)

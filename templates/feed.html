@@ -132,6 +132,7 @@
             <a href="{{ url_for('serve_index') }}" class="sidebar">📝 My Notes</a>
             <a href="{{ url_for('explore') }}" class="sidebar">🔍 Explore</a>
             <a href="{{ url_for('tasks') }}" class="sidebar">🤖 Task Manager</a>
+            <a href="{{ url_for('upload_file') }}" class="sidebar">📂 Upload</a>
             <a href="{{ url_for('profile') }}" class="sidebar">👤 Profile</a>
             <a href="{{ url_for('logout') }}" class="sidebar">🚪 Logout</a>
         </nav>
@@ -143,9 +144,6 @@
         </header>
 
         <main class="p-6 space-y-6">
-            <!-- <a href="{{ url_for('set_theme', theme='light') }}" class="project">Light Mode</a>
-            <a href="{{ url_for('set_theme', theme='dark') }}" class="project">Dark Mode</a>
-            <a href="{{ url_for('set_theme', theme='purple') }}" class="project">Purple Mode</a> -->
             <h1 class="text-xl font-bold">Welcome {{ current_user.username }}!</h1>
             <div class="template-options">
                 <a href="{{ url_for('set_theme', theme='light') }}" style="text-decoration: none; color: inherit;">

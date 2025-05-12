@@ -10,6 +10,9 @@ function popup() {
         <button onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
         <button onclick="formatText2('insertBulletPoint')"><i class="fa-solid fa-circle"></i></button>
         <button onclick="formatText('insertCheckbox')"><i class="fa-solid fa-square-check"></i></button>
+        <button onclick="triggerFileUpload('file')"><i class="fa-solid fa-paperclip"></i></button>
+        <button onclick="triggerFileUpload('image')"><i class="fa-solid fa-image"></i></button>
+        <button onclick="triggerFileUpload('video')"><i class="fa-solid fa-video"></i></button>
       </div>
       <div id="note-editor" contenteditable="true" placeholder="Enter your note..."></div>
       <div id="btn-container">
@@ -20,10 +23,6 @@ function popup() {
   `;
   document.body.appendChild(popupContainer);
 }
-
-        // <button onclick="triggerFileUpload('file')"><i class="fa-solid fa-paperclip"></i></button>
-        // <button onclick="triggerFileUpload('image')"><i class="fa-solid fa-image"></i></button>
-        // <button onclick="triggerFileUpload('video')"><i class="fa-solid fa-video"></i></button>
 
 function formatText(command) {
   if (command === "insertCheckbox") {
@@ -155,7 +154,9 @@ function editNote(noteId) {
             <button onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
             <button onclick="formatText2('insertBulletPoint')"><i class="fa-solid fa-circle"></i></button>
             <button onclick="formatText('insertCheckbox')"><i class="fa-solid fa-square-check"></i></button>
-
+            <button onclick="triggerFileUpload('file')"><i class="fa-solid fa-paperclip"></i></button>
+            <button onclick="triggerFileUpload('image')"><i class="fa-solid fa-image"></i></button>
+            <button onclick="triggerFileUpload('video')"><i class="fa-solid fa-video"></i></button>
           </div>
           <div id="note-editor" contenteditable="true">${noteToEdit.content}</div>
           <div id="btn-container">

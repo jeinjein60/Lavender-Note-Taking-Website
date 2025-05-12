@@ -391,6 +391,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import os
 
 app = Flask(__name__)
@@ -434,8 +435,15 @@ class Upload(db.Model):
     filetype = db.Column(db.String(10), nullable=False)  # 'image' or 'video'
     category = db.Column(db.String(100), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
     user = db.relationship('User', backref='uploads')
+
+class Media(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)
+    filepath = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    upload_time = db.Column(db.DateTime, default=datetime.utcnow)
+    user = db.relationship('User', backref='media')
 
 
 
@@ -567,9 +575,32 @@ def admin_pages():
 
 @app.route('/admin/images')
 @login_required
-@admin_required
 def admin_images():
-    return render_template('imagesAdmin.html')
+    if not current_user.is_admin:
+        flash("Unauthorized")
+        return redirect(url_for('index'))
+    
+    media = Media.query.order_by(Media.upload_time.desc()).all()
+    return render_template('imagesAdmin.html', media=media)
+
+
+@app.route('/admin/images/delete/<int:media_id>')
+@login_required
+def delete_media(media_id):
+    if not current_user.is_admin:
+        flash("Unauthorized")
+        return redirect(url_for('index'))
+
+    media = Media.query.get_or_404(media_id)
+    try:
+        os.remove(media.filepath)  # Remove the file from storage
+    except:
+        pass  # Ignore if file missing
+
+    db.session.delete(media)
+    db.session.commit()
+    flash('Media deleted.')
+    return redirect(url_for('admin_images'))
 
 @app.route('/admin/pages/delete/<int:note_id>')
 @login_required

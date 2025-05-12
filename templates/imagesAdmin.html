@@ -253,7 +253,7 @@
       <li><a href="{{ url_for('admin_users') }}">Users</a></li>
       <li><a href="{{ url_for('admin_pages') }}">Pages</a></li>
       <li><a href="{{ url_for('admin_tasks') }}">Tasks</a></li>
-      <li><a href="{{ url_for('admin_images') }}" class="active">Images</a></li>
+      <li><a href="{{ url_for('admin_images') }}" class="active">Media</a></li>
       <li><a href="{{ url_for('set_theme', theme='light') }}">Light Mode</a></li>
       <li><a href="{{ url_for('set_theme', theme='dark') }}">Dark Mode</a></li>
       <li><a href="{{ url_for('set_theme', theme='purple') }}">Purple Mode</a></li>
@@ -261,25 +261,32 @@
     </ul>
   </div>
 
-  <!-- <div class="main">
-    <h1>Published Notes</h1>
+    <div class="main">
+    <h1>Uploaded Media</h1>
 
     <div class="note-grid">
-      {% for note in notes %}
+        {% for item in media %}
         <div class="note-card">
-          <div>
-            <div class="note-title">{{ note.title }}</div>
-            <div class="note-description">{{ note.content }}</div>
-          </div>
-          <div class="note-footer">
-            <div class="note-meta">Created by @{{ note.user.username }}</div>
-            <a href="{{ url_for('delete_note_admin', note_id=note.id) }}" class="delete-btn">Delete</a>
-          </div>
+            {% if item.filename.endswith(('.jpg', '.jpeg', '.png', '.gif')) %}
+            <img src="{{ url_for('static', filename=item.filepath) }}" alt="{{ item.filename }}" style="max-width:100%; height:auto; border-radius: 8px;">
+            {% elif item.filename.endswith(('.mp4', '.webm', '.ogg')) %}
+            <video controls style="max-width:100%; border-radius: 8px;">
+                <source src="{{ url_for('static', filename=item.filepath) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            {% endif %}
+            
+            <div class="note-footer">
+            <div class="note-meta">Uploaded by @{{ item.user.username }}<br><small>{{ item.upload_time.strftime('%Y-%m-%d %H:%M') }}</small></div>
+            <a href="{{ url_for('delete_media', media_id=item.id) }}" class="delete-btn">Delete</a>
+            </div>
         </div>
         {% else %}
-        <p>No notes published yet.</p>
-      {% endfor %}
-    </div> -->
+        <p>No media uploaded yet.</p>
+        {% endfor %}
+    </div>
+    </div>
+
 
   </div>
 </body>

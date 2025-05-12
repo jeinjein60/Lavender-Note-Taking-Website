@@ -141,9 +141,6 @@ function editNote(noteId) {
         console.error('Note not found.');
         return;
       }
-            // <button onclick="triggerFileUpload('file')"><i class="fa-solid fa-paperclip"></i></button>
-            // <button onclick="triggerFileUpload('image')"><i class="fa-solid fa-image"></i></button>
-            // <button onclick="triggerFileUpload('video')"><i class="fa-solid fa-video"></i></button>
       const editingPopup = document.createElement("div");
       editingPopup.innerHTML = `
         <div id="editing-container" data-note-id="${noteId}">

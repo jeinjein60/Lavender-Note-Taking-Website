@@ -3,11 +3,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///enrollment.db'
 app.secret_key = 'super-secret-key'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -36,6 +41,48 @@ class Task(db.Model):
     category = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+class Upload(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)
+    filetype = db.Column(db.String(10), nullable=False)  # 'image' or 'video'
+    category = db.Column(db.String(100), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    user = db.relationship('User', backref='uploads')
+
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload_file():
+    if request.method == 'POST':
+        file = request.files.get('file')
+        category = request.form.get('category', 'Uncategorized')
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+
+            ext = filename.rsplit('.', 1)[1].lower()
+            filetype = 'image' if ext in ['png', 'jpg', 'jpeg', 'gif'] else 'video'
+
+            new_upload = Upload(
+                filename=filename,
+                filetype=filetype,
+                category=category,
+                user_id=current_user.id
+            )
+            db.session.add(new_upload)
+            db.session.commit()
+
+            return redirect(url_for('upload_file'))  # Reload page to show new file
+
+    # On GET (or after POST redirect), show user's uploads
+    uploads = Upload.query.filter_by(user_id=current_user.id).all()
+    uploads_by_category = {}
+    for u in uploads:
+        uploads_by_category.setdefault(u.category, []).append(u)
+
+    return render_template('upload.html', uploads_by_category=uploads_by_category)
 
 
 

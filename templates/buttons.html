@@ -311,7 +311,6 @@
     <h1 class="logo">Purple Note</h1>
     <div class="nav-links">
       <a href="{{ url_for('feed') }}" class="nav-button">Feed</a>
-      <!-- <a href="{{ url_for('homepage') }}" class="nav-button">Home</a> -->
       <a href="{{ url_for('logout') }}" class="nav-button">Logout</a>
     </div>
   </header>
@@ -423,23 +422,6 @@
       ghostClass: 'drag-ghost',
     });
   }
-
-  // function addCategory() {
-  //   const input = document.getElementById('newCategoryName');
-  //   const name = input.value.trim();
-  //   if (name === "") return;
-
-  //   const key = generateIdFromLabel(name);
-  //   const listId = key + "List";
-
-  //   if (!categories[key]) {
-  //     categories[key] = { label: name, listId: listId };
-  //     input.value = "";
-  //     initCategories();
-  //   } else {
-  //     alert("This category already exists.");
-  //   }
-  // }
 
   function addCategory() {
     const input = document.getElementById("newCategoryName");

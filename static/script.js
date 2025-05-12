@@ -120,9 +120,7 @@ function displayNotes() {
           <div class="note-header">${note.title}</div>
           <div class="note-content" contenteditable="false">${note.content}</div>
           <div id="noteBtns-container">
-            <button id="editBtn" onclick="editNote(${note.id})"><i class="fa-solid fa-pen"></i></button>
             <button id="deleteBtn" onclick="deleteNote(${note.id})"><i class="fa-solid fa-trash"></i></button>
-            <button id="deleteBtn" onclick="shareNote(${note.id})"><i class="fa-solid fa-share-from-square"></i></button>
           </div>
         `;
         notesList.appendChild(listItem);

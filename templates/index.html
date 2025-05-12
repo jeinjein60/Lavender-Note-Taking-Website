@@ -411,29 +411,104 @@
       .left-button:hover {
         background-color: var(--button-hover);
       }
+        #createForm form {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+        }
+
+        #createForm input,
+        #createForm textarea,
+        #createForm label,
+        #createForm button {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 12px;
+        }
+        button{
+            align-items: right;
+        }
+        .add-note-button {
+            background-color: var(--button-bg);
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+        }
+
+        .add-note-button:hover {
+            background-color: var(--button-hover);
+        }
+        .note-textarea {
+            background-color: var(--note-bg);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px;
+            width: 300px;
+            height: 200px;
+            box-sizing: border-box;
+        }
+
+
       </style>
 </head>
 
 <body class="{{ current_user.theme if current_user.is_authenticated else 'purple' }}">
   <div id="top-buttons">
-    <!-- <a href="{{ url_for('homepage') }}" class="top-button">HomePage</a> -->
     <a href="{{ url_for('feed') }}" class="top-button">Feed</a>
     <a href="{{ url_for('logout') }}" id="logoutButton">Logout</a>
   </div>
-  <input type="file" id="fileUploader" style="display: none;" onchange="handleFileUpload()" />
-  <div id="container">
-    <div id="list-header">
-      <div id="addNoteDiv" onclick="popup()">
-        <i class="fa-solid fa-plus"></i>
-      </div>
-    </div>
-    <div id="list-container">
-      <ul id="notes-list"></ul>
-    </div>
-  </div>
-  </div>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
 
+<div id="container">
+  <div id="createForm" class="mt-6">
+    <form method="POST" action="{{ url_for('create_note') }}">
+      <input id="note-title" type="text" name="title" placeholder="Note Title" required />
+      <!-- Move topic input here, inside the same form -->
+      <input type="text" name="topic" placeholder="Enter topic" required />
+      
+      <textarea name="content" placeholder="Write your note..." required class="note-textarea"></textarea>
+
+      <label class="inline-flex items-center mt-2">
+        <input type="checkbox" name="is_public" class="form-checkbox text-purple-600">
+        <span class="ml-2 text-sm">Share this note publicly</span>
+      </label>
+
+      <div class="flex justify-start">
+        <button type="submit" class="add-note-button mt-4 px-4 py-2 rounded shadow hover:bg-purple-600 transition">
+          Add Note
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div id="list-container">
+    <ul id="notes-list">
+      {% for note in notes %}
+      <li>
+        <h3 class="font-bold text-lg mb-2">{{ note.title }}</h3>
+        <div class="note-content">{{ note.content }}</div>
+        <div class="mt-2 text-xs">
+          {% if note.is_public %}
+            <span class="text-green-600 font-bold">Public</span>
+          {% else %}
+            <span class="text-gray-400">Private</span>
+          {% endif %}
+        </div>
+        <div class="mt-2 text-xs">
+          <!-- Display the topic -->
+          <span class="text-purple-600">{{ note.topic }}</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 
 </html>

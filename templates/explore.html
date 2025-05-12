@@ -19,6 +19,9 @@
             --button-hover: #6b21a8;
             --top-hover: #9b61ce;
             --titletop: #6b21a8;
+            --notebg: #fff;
+            --votebuttons-bg: #ede9fe;
+            --votebuttons-hover: #d8b4fe;
         }
         body.light{
             --bg-color: #fdfdfd;
@@ -32,6 +35,9 @@
             --aside-hover: #424242;
             --top-hover: #747474;
             --titletop: #000;
+            --notebg: #fff;
+            --votebuttons-bg: #ededed;
+            --votebuttons-hover: #ebebeb;
         }
         body.dark{
             --bg-color: #373737;
@@ -45,11 +51,45 @@
             --aside-hover: #8b8b8b;
             --top-hover: #6f6f6f;
             --titletop: #fff;
+            --notebg: #292929;
+            --votebuttons-bg: #48474c;
+            --votebuttons-hover: #2a2332;
+        
         }
         body{
             background-color: var(--bg-color);
             color: var(--bg-text);
             display: flex
+        }
+        .note {
+            background-color: var(--notebg);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .vote-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .vote-buttons button {
+            background-color: var(--votebuttons-bg);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        .vote-buttons button:hover {
+            background-color: var(--votebuttons-hover);
+        }
+
+        .vote-count {
+            font-weight: bold;
         }
 
         aside {
@@ -131,31 +171,53 @@
         </nav>
     </aside>
     <div class="main-content">
-        <header>
-            <h1 class="text-xl font-bold text-purple-800">Explore Public Notes</h1>
-            <a href="{{ url_for('serve_index') }}" class="button">New Note</a>
+        <header class="shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+            <h1 class="text-xl font-bold">Explore Notes</h1>
+            <form method="get" action="/explore" class="flex gap-2 items-center">
+                <input type="text" name="topic" placeholder="Filter by topic..."
+                    class="px-3 py-2 border border-gray-300 rounded" />
+                <button type="submit"
+                    class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-600">Filter</button>
+            </form>
         </header>
 
         <main class="p-6 space-y-6">
-            <div class="content-block">
-                <h2 class="text-lg font-bold mb-2">Welcome to the Explore Page!</h2>
-                <p class="text-gray-700">This is where you can discover notes shared by other users.</p>
-                <p class="text-gray-700 mt-2">
-                    (Content for public notes or trending topics would go here, e.g., fetched from a query.)
-                </p>
-            </div>
-            {#
             {% for note in notes %}
-            <div class="bg-white p-4 rounded shadow-md">
-                <h2 class="text-lg font-bold mb-2">{{ note.title }}</h2>
-                <p class="text-gray-700">{{ note.content }}</p>
-                <p class="text-sm text-gray-500">By: {{ note.user.username if note.user else 'Unknown User' }}</p>
+            <div class="note" id="note-{{ note.id }}">
+                <h3 class="text-lg font-semibold">{{ note.title }}</h3>
+                <p>{{ note.content }}</p>
+                <p class="text-sm text-gray-500">Topic: {{ note.topic }} | By: {{ note.user.username if note.user else
+                    'Unknown
+                    User' }}</p>
+
+                <div class="vote-buttons" data-note-id="{{ note.id }}">
+                    <button class="upvote">⬆️</button>
+                    <span class="vote-count" id="vote-count-{{ note.id }}">{{ note.vote_count }}</span>
+                    <button class="downvote">⬇️</button>
+                </div>
             </div>
             {% endfor %}
-            #}
         </main>
     </div>
+        <script>
+        document.querySelectorAll('.vote-buttons').forEach(group => {
+            const noteId = group.dataset.noteId;
+            const up = group.querySelector('.upvote');
+            const down = group.querySelector('.downvote');
+            const count = group.querySelector('.vote-count');
 
+            up.onclick = () => sendVote(noteId, 'up');
+            down.onclick = () => sendVote(noteId, 'down');
+
+            function sendVote(noteId, voteType) {
+                fetch(`/api/notes/${noteId}/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vote_type: voteType })
+                }).then(() => location.reload());
+            }
+        });
+    </script>
 </body>
 
 </html>
